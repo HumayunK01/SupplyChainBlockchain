@@ -9,10 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/react-icons": "^2.2.7",
+    "framer-motion": "^12.34.2",
+    "gsap": "^3.14.2",
+    "locomotive-scroll": "^5.0.1",
+    "lucide-react": "^0.575.0",
     "next": "^14.0.0",
     "qrcode.react": "^4.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^5.5.0",
     "web3": "^1.10.4"
   },
   "devDependencies": {

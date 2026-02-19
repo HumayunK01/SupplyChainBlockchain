@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { loadWeb3, getContract } from '@/lib/web3'
-import { checkIsOwner, getContractOwner } from '@/lib/contractUtils'
+import { checkIsOwner, getContractOwner, getUserIdentity } from '@/lib/contractUtils'
 
 // Components
 import { OrderHeader } from '@/components/orders/OrderHeader'
@@ -47,6 +47,17 @@ export default function AddMed() {
       const { contract, account } = await getContract()
       setSupplyChain(contract)
       setCurrentAccount(account)
+
+      const userRole = await getUserIdentity(account)
+
+      // Only load full data if the user is the owner
+      if (userRole !== 'OWNER') {
+        const owner = await getContractOwner()
+        setIsOwner(false)
+        if (owner) setContractOwner(owner)
+        setLoading(false)
+        return
+      }
 
       const medCtr = await contract.methods.medicineCtr().call()
       const medData: { [key: number]: Medicine } = {}

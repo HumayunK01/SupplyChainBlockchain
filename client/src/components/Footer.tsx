@@ -2,7 +2,6 @@
 import React from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { SiX, SiLinkedin, SiGithub, SiDiscord } from 'react-icons/si'
 
 const Footer = () => {
     return (
@@ -41,33 +40,6 @@ const Footer = () => {
                         <Link href="/supply" className="text-slate-600 hover:text-slate-900 text-base font-semibold transition-colors">Supply</Link>
                         <Link href="#" className="text-slate-600 hover:text-slate-900 text-base font-semibold transition-colors">Privacy</Link>
                     </motion.div>
-
-                    {/* Social Icons */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.2 }}
-                        className="flex items-center space-x-6 mb-10"
-                    >
-                        {[
-                            { Icon: SiX, href: "#", label: "X" },
-                            { Icon: SiLinkedin, href: "#", label: "LinkedIn" },
-                            { Icon: SiGithub, href: "#", label: "GitHub" },
-                            { Icon: SiDiscord, href: "#", label: "Discord" },
-                        ].map((social, i) => (
-                            <a
-                                key={i}
-                                href={social.href}
-                                className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-900 hover:text-white transition-all duration-300"
-                                aria-label={social.label}
-                            >
-                                <social.Icon size={18} />
-                            </a>
-                        ))}
-                    </motion.div>
-
-                    {/* Bottom Section */}
                     <div className="w-full pt-8 border-t border-slate-100 flex flex-col items-center">
                         <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.25em] mb-4">
                             © 2026 SecureChain • Immutability Guaranteed

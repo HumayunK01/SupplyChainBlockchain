@@ -20,15 +20,15 @@ export const loadWeb3 = async (): Promise<void> => {
 }
 
 export const getContract = async () => {
-  if (!window.web3) {
+  if (!window.web3 || !window.web3.eth) {
     await loadWeb3()
   }
 
   const web3 = window.web3!
   const accounts = await web3.eth.getAccounts()
   const networkId = await web3.eth.net.getId()
-  
-  // Import deployment info
+
+  // Import deployment info (forcing NextJS HMR reload)
   const deployments = await import('../deployments.json')
   const networkIdStr = networkId.toString()
   const networkData = deployments.networks[networkIdStr as keyof typeof deployments.networks]
@@ -54,7 +54,7 @@ export const switchToNetwork = async (chainId: string | number) => {
   }
 
   const chainIdHex = `0x${Number(chainId).toString(16)}`
-  
+
   try {
     await window.ethereum.request({
       method: 'wallet_switchEthereumChain',
@@ -77,7 +77,7 @@ export const switchToNetwork = async (chainId: string | number) => {
                 decimals: 18,
               },
               rpcUrls: chainId === '1337' || chainId === '5777'
-                ? ['http://127.0.0.1:7545'] 
+                ? ['http://127.0.0.1:7545']
                 : ['http://127.0.0.1:8545'],
             },
           ],

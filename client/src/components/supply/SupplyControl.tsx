@@ -2,8 +2,10 @@
 
 import { motion } from 'framer-motion'
 import { MapPin, Building2, Truck, ShoppingBag, CheckCircle2, ArrowRight } from 'lucide-react'
+import { UserRole } from '@/lib/contractUtils'
 
 interface SupplyControlProps {
+    role: UserRole
     rmsId: string
     manId: string
     disId: string
@@ -22,72 +24,29 @@ interface SupplyControlProps {
 }
 
 export const SupplyControl = ({
+    role,
     rmsId, manId, disId, retId, soldId,
     onRMSChange, onManChange, onDisChange, onRetChange, onSoldChange,
     onRMSSubmit, onManSubmit, onDisSubmit, onRetSubmit, onSoldSubmit
 }: SupplyControlProps) => {
 
-    const controls = [
-        {
-            id: 1,
-            title: 'Supply Raw Materials',
-            description: 'Authorized RMS Node Only',
-            icon: MapPin,
-            value: rmsId,
-            onChange: onRMSChange,
-            onSubmit: onRMSSubmit,
-            color: 'slate'
-        },
-        {
-            id: 2,
-            title: 'Manufacturing Protocol',
-            description: 'Production Facility Node Only',
-            icon: Building2,
-            value: manId,
-            onChange: onManChange,
-            onSubmit: onManSubmit,
-            color: 'blue'
-        },
-        {
-            id: 3,
-            title: 'Logistics Distribution',
-            description: 'Authorized Logistics Hub Only',
-            icon: Truck,
-            value: disId,
-            onChange: onDisChange,
-            onSubmit: onDisSubmit,
-            color: 'amber'
-        },
-        {
-            id: 4,
-            title: 'Retail Integration',
-            description: 'Certified Retail Center Only',
-            icon: retId,
-            value: retId,
-            onChange: onRetChange,
-            onSubmit: onRetSubmit,
-            color: 'indigo'
-        },
-        {
-            id: 5,
-            title: 'Consumer Transfer',
-            description: 'Final Sale Authorization',
-            icon: CheckCircle2,
-            value: soldId,
-            onChange: onSoldChange,
-            onSubmit: onSoldSubmit,
-            color: 'emerald'
-        }
+    const allSteps = [
+        { id: 1, reqRole: 'RMS', title: 'RMS Provisioning', desc: 'Secure material handover', icon: MapPin, val: rmsId, setVal: onRMSChange, sub: onRMSSubmit },
+        { id: 2, reqRole: 'MAN', title: 'Asset Fabrication', desc: 'Authorized manufacturing', icon: Building2, val: manId, setVal: onManChange, sub: onManSubmit },
+        { id: 3, reqRole: 'DIS', title: 'Global Logistics', desc: 'Network distribution', icon: Truck, val: disId, setVal: onDisChange, sub: onDisSubmit },
+        { id: 4, reqRole: 'RET', title: 'Point of Sale', desc: 'Retailer integration', icon: ShoppingBag, val: retId, setVal: onRetChange, sub: onRetSubmit },
+        { id: 5, reqRole: 'RET', title: 'End Transmission', desc: 'Final consumer delivery', icon: CheckCircle2, val: soldId, setVal: onSoldChange, sub: onSoldSubmit }
     ]
 
-    // Fix: Some icons were swapped or incorrect, updating them with proper ones
-    const steps = [
-        { id: 1, title: 'RMS Provisioning', desc: 'Secure material handover', icon: MapPin, val: rmsId, setVal: onRMSChange, sub: onRMSSubmit },
-        { id: 2, idKey: 'man', title: 'Asset Fabrication', desc: 'Authorized manufacturing', icon: Building2, val: manId, setVal: onManChange, sub: onManSubmit },
-        { id: 3, idKey: 'dis', title: 'Global Logistics', desc: 'Network distribution', icon: Truck, val: disId, setVal: onDisChange, sub: onDisSubmit },
-        { id: 4, idKey: 'ret', title: 'Point of Sale', desc: 'Retailer integration', icon: ShoppingBag, val: retId, setVal: onRetChange, sub: onRetSubmit },
-        { id: 5, idKey: 'sold', title: 'End Transmission', desc: 'Final consumer delivery', icon: CheckCircle2, val: soldId, setVal: onSoldChange, sub: onSoldSubmit }
-    ]
+    const steps = allSteps.filter(step => role === 'OWNER' || role === step.reqRole)
+
+    if (role === 'PUBLIC') {
+        return (
+            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-8 text-center">
+                <p className="text-slate-500 font-medium">You must be connected with an authorized participant node to interact with supply line terminals.</p>
+            </div>
+        )
+    }
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

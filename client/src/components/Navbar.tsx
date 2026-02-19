@@ -6,11 +6,13 @@ import { useRouter, usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Wallet, Menu, X, ArrowRight, User, Package, Search, Truck, LogOut } from 'lucide-react'
 import { loadWeb3 } from '@/lib/web3'
+import { getUserIdentity, UserRole } from '@/lib/contractUtils'
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false)
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [account, setAccount] = useState<string | null>(null)
+    const [role, setRole] = useState<UserRole>('PUBLIC')
     const router = useRouter()
     const pathname = usePathname()
 
@@ -20,18 +22,55 @@ const Navbar = () => {
         }
         window.addEventListener('scroll', handleScroll)
 
-        // Check if account is already connected
-        const checkConnection = async () => {
-            if (window.ethereum) {
-                const accounts = await window.ethereum.request({ method: 'eth_accounts' })
-                if (accounts.length > 0) {
-                    setAccount(accounts[0])
+        let isMounted = true
+
+        const checkConnection = async (retries = 3) => {
+            if (!isMounted) return
+            try {
+                if (window.ethereum) {
+                    const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+                    if (accounts.length > 0) {
+                        setAccount(accounts[0])
+                        const userRole = await getUserIdentity(accounts[0])
+                        if (isMounted) setRole(userRole)
+                    }
+                } else if (retries > 0) {
+                    setTimeout(() => checkConnection(retries - 1), 500)
                 }
+            } catch (err) {
+                console.error("Auto-connect silently failed:", err)
             }
         }
         checkConnection()
 
-        return () => window.removeEventListener('scroll', handleScroll)
+        const handleAccountsChanged = async (accounts: string[]) => {
+            if (accounts.length > 0) {
+                setAccount(accounts[0])
+                const userRole = await getUserIdentity(accounts[0])
+                setRole(userRole)
+            } else {
+                setAccount(null)
+                setRole('PUBLIC')
+            }
+        }
+
+        const handleChainChanged = () => {
+            window.location.reload()
+        }
+
+        if (window.ethereum) {
+            window.ethereum.on('accountsChanged', handleAccountsChanged)
+            window.ethereum.on('chainChanged', handleChainChanged)
+        }
+
+        return () => {
+            isMounted = false
+            window.removeEventListener('scroll', handleScroll)
+            if (window.ethereum) {
+                window.ethereum.removeListener('accountsChanged', handleAccountsChanged)
+                window.ethereum.removeListener('chainChanged', handleChainChanged)
+            }
+        }
     }, [])
 
     useEffect(() => {
@@ -43,7 +82,11 @@ const Navbar = () => {
             await loadWeb3()
             if (window.ethereum) {
                 const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-                setAccount(accounts[0])
+                if (accounts.length > 0) {
+                    setAccount(accounts[0])
+                    const userRole = await getUserIdentity(accounts[0])
+                    setRole(userRole)
+                }
             }
         } catch (error) {
             console.error('Failed to connect wallet:', error)
@@ -52,16 +95,20 @@ const Navbar = () => {
 
     const handleDisconnect = () => {
         setAccount(null)
+        setRole('PUBLIC')
         // Note: MetaMask doesn't have a formal "disconnect" button via API, 
         // we just clear our app state.
     }
 
-    const navLinks = [
-        { name: 'Roles', path: '/roles', icon: User },
-        { name: 'Order', path: '/addmed', icon: Package },
-        { name: 'Track', path: '/track', icon: Search },
-        { name: 'Supply', path: '/supply', icon: Truck },
+    // Role-based navigation links
+    const allLinks = [
+        { name: 'Roles', path: '/roles', icon: User, reqRole: ['OWNER'] },
+        { name: 'Order Assets', path: '/addmed', icon: Package, reqRole: ['OWNER'] },
+        { name: 'Track', path: '/track', icon: Search, reqRole: ['PUBLIC', 'OWNER', 'RMS', 'MAN', 'DIS', 'RET'] },
+        { name: 'Supply', path: '/supply', icon: Truck, reqRole: ['OWNER', 'RMS', 'MAN', 'DIS', 'RET'] },
     ]
+
+    const navLinks = allLinks.filter(link => link.reqRole.includes(role) || link.reqRole.includes('PUBLIC'))
 
     const formatAddress = (addr: string) => {
         return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`

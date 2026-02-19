@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { loadWeb3, getContract } from '@/lib/web3'
 import { motion } from 'framer-motion'
+import { getUserIdentity, UserRole } from '@/lib/contractUtils'
 
 // Components
 import { SupplyHeader } from '@/components/supply/SupplyHeader'
@@ -17,6 +18,7 @@ import { Medicine } from '@/components/supply/types'
 export default function Supply() {
   const router = useRouter()
   const [currentAccount, setCurrentAccount] = useState('')
+  const [role, setRole] = useState<UserRole>('PUBLIC')
   const [loading, setLoading] = useState(true)
   const [supplyChain, setSupplyChain] = useState<any>(null)
   const [med, setMed] = useState<{ [key: number]: Medicine }>({})
@@ -43,6 +45,9 @@ export default function Supply() {
       const { contract, account } = await getContract()
       setSupplyChain(contract)
       setCurrentAccount(account)
+
+      const userRole = await getUserIdentity(account)
+      setRole(userRole)
 
       const medCtr = await contract.methods.medicineCtr().call()
 
@@ -139,6 +144,7 @@ export default function Supply() {
             Operational Terminals
           </h3>
           <SupplyControl
+            role={role}
             rmsId={rmsId} manId={manId} disId={disId} retId={retId} soldId={soldId}
             onRMSChange={setRmsId} onManChange={setManId} onDisChange={setDisId} onRetChange={setRetId} onSoldChange={setSoldId}
             onRMSSubmit={(e) => { e.preventDefault(); handleAction('RMS', rmsId, 'RMS Supply Verified', setRmsId) }}

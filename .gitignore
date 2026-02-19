@@ -1,0 +1,66 @@
+# =========================
+# Dependencies
+# =========================
+node_modules/
+.pnp
+.pnp.js
+
+# =========================
+# Environment & Secrets
+# =========================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+
+# =========================
+# Hardhat / Blockchain
+# =========================
+backend/cache/
+backend/artifacts/
+# typechain-types are generated — ignore if you prefer to regenerate on install
+# backend/typechain-types/
+
+# =========================
+# Next.js
+# =========================
+client/.next/
+client/out/
+client/build/
+
+# Compiled contract artifacts (output of `hardhat compile` into client)
+# Keep deployments.json tracked so contract addresses are shared with the team
+client/src/artifacts/
+
+# =========================
+# Build & Coverage
+# =========================
+/coverage
+*.tsbuildinfo
+next-env.d.ts
+
+# =========================
+# Debug Logs
+# =========================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Editor & OS
+# =========================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# =========================
+# Vercel / Deployment
+# =========================
+.vercel

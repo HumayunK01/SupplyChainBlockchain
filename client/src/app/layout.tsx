@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import GlobalBackground from '@/components/GlobalBackground'
 import SmoothScroll from '@/components/SmoothScroll'
+import Preloader from '@/components/Preloader'
 
 const manrope = Manrope({ subsets: ['latin'], variable: '--font-manrope' })
 
@@ -74,6 +75,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${manrope.variable}`}>
       <body className="font-manrope antialiased text-slate-900 bg-slate-50 relative">
+        <Preloader />
         <SmoothScroll>
           <GlobalBackground />
           <NetworkHelper />

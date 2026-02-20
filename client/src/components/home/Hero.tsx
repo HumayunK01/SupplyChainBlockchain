@@ -4,6 +4,10 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, Search } from 'lucide-react';
 
+import TextType from '@/components/TextType';
+import SplitText from '@/components/SplitText';
+import AnimatedContent from '@/components/AnimatedContent';
+
 const Hero = () => {
     const router = useRouter();
 
@@ -13,6 +17,7 @@ const Hero = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 2.0 }}
                     className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 mb-8"
                 >
                     <span className="relative flex h-2 w-2">
@@ -27,27 +32,46 @@ const Hero = () => {
                 <motion.h1
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
+                    transition={{ delay: 2.1 }}
                     className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 md:mb-8 leading-[1.2] font-manrope tracking-tight"
                 >
-                    Architecting <span className="text-gradient">Trust</span> in <br className="hidden sm:block" />
-                    Global Supply Chains
+                    <TextType
+                        text={["Architecting Trust in\nGlobal Supply Chains", "Securing Every Step of\nthe Product Journey!"]}
+                        typingSpeed={60}
+                        pauseDuration={2000}
+                        deletingSpeed={30}
+                        showCursor
+                        cursorClassName="text-slate-400"
+                        initialDelay={2200}
+                    />
                 </motion.h1>
 
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
+                <SplitText
+                    text="Secure your trade ecosystem with our next-generation blockchain platform. End-to-end traceability for every asset, powered by the decentralized web."
                     className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mb-12 leading-relaxed"
-                >
-                    Secure your trade ecosystem with our next-generation blockchain platform.
-                    End-to-end traceability for every asset, powered by the decentralized web.
-                </motion.p>
+                    delay={20}
+                    duration={1}
+                    ease="power3.out"
+                    splitType="words"
+                    from={{ opacity: 0, y: 20 }}
+                    to={{ opacity: 1, y: 0 }}
+                    threshold={0.1}
+                    rootMargin="-50px"
+                    textAlign="center"
+                    tag="p"
+                    animationDelay={2.4}
+                />
 
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
+                <AnimatedContent
+                    distance={100}
+                    direction="vertical"
+                    duration={0.8}
+                    ease="power3.out"
+                    initialOpacity={0}
+                    animateOpacity
+                    scale={1}
+                    threshold={0.1}
+                    delay={2.9}
                     className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4"
                 >
                     <motion.button
@@ -69,7 +93,7 @@ const Hero = () => {
                         <Search size={18} className="text-slate-400 group-hover:text-slate-900 transition-colors" />
                         <span>Track Asset</span>
                     </motion.button>
-                </motion.div>
+                </AnimatedContent>
             </div>
         </section>
     );

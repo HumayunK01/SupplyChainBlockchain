@@ -4,9 +4,10 @@ import { useEffect } from 'react';
 
 const SmoothScroll = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
+        let locomotiveScroll: any;
         (async () => {
             const LocomotiveScroll = (await import('locomotive-scroll')).default;
-            const locomotiveScroll = new LocomotiveScroll({
+            locomotiveScroll = new LocomotiveScroll({
                 lenisOptions: {
                     lerp: 0.1,
                     duration: 1.2,
@@ -14,6 +15,10 @@ const SmoothScroll = ({ children }: { children: React.ReactNode }) => {
                 }
             });
         })();
+
+        return () => {
+            if (locomotiveScroll) locomotiveScroll.destroy();
+        }
     }, []);
 
     return <>{children}</>;

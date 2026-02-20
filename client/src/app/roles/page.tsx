@@ -9,6 +9,7 @@ import { checkIsOwner, getContractOwner, getUserIdentity } from '@/lib/contractU
 import { RoleHeader } from '@/components/roles/RoleHeader'
 import { RoleRegistrationForm } from '@/components/roles/RoleRegistrationForm'
 import { RoleGroupList } from '@/components/roles/RoleGroupList'
+import SkeletonLoader from '@/components/SkeletonLoader'
 
 // Types
 import { Role, RoleType, RolesState } from '@/components/roles/types'
@@ -120,11 +121,7 @@ export default function AssignRoles() {
   }
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-slate-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900" />
-      </div>
-    )
+    return <SkeletonLoader />
   }
 
   return (

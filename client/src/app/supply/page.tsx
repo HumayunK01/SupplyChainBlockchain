@@ -11,6 +11,7 @@ import { SupplyHeader } from '@/components/supply/SupplyHeader'
 import { SupplyFlowViz } from '@/components/supply/SupplyFlowViz'
 import { SupplyTable } from '@/components/supply/SupplyTable'
 import { SupplyControl } from '@/components/supply/SupplyControl'
+import SkeletonLoader from '@/components/SkeletonLoader'
 
 // Types
 import { Medicine } from '@/components/supply/types'
@@ -106,11 +107,7 @@ export default function Supply() {
   }
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-slate-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900" />
-      </div>
-    )
+    return <SkeletonLoader />
   }
 
   return (

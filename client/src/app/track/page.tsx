@@ -9,6 +9,7 @@ import { TrackHeader } from '@/components/track/TrackHeader'
 import { TrackSearch } from '@/components/track/TrackSearch'
 import { TrackAssetTable } from '@/components/track/TrackAssetTable'
 import { TrackJourney } from '@/components/track/TrackJourney'
+import SkeletonLoader from '@/components/SkeletonLoader'
 
 // Types
 import { Medicine, Role } from '@/components/track/types'
@@ -121,11 +122,7 @@ export default function Track() {
   }
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-slate-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900" />
-      </div>
-    )
+    return <SkeletonLoader />
   }
 
   return (

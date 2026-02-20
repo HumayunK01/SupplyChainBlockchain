@@ -10,6 +10,7 @@ import { OrderHeader } from '@/components/orders/OrderHeader'
 import { OrderStats } from '@/components/orders/OrderStats'
 import { OrderForm } from '@/components/orders/OrderForm'
 import { OrderTable } from '@/components/orders/OrderTable'
+import SkeletonLoader from '@/components/SkeletonLoader'
 
 // Types
 import { Medicine, RoleCounts } from '@/components/orders/types'
@@ -130,11 +131,7 @@ export default function AddMed() {
   }
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-slate-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900" />
-      </div>
-    )
+    return <SkeletonLoader />
   }
 
   const requirementsMet = roleCounts.rms > 0 && roleCounts.man > 0 && roleCounts.dis > 0 && roleCounts.ret > 0

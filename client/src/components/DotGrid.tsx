@@ -146,28 +146,51 @@ const DotGrid: React.FC<DotGridProps> = ({
 
             const { x: px, y: py } = pointerRef.current;
 
+            // Ultra-optimized batch rendering for 99% of normal un-interacted dots
+            ctx.beginPath();
+            ctx.fillStyle = baseColor;
+
+            const activeDots: Dot[] = [];
+
             for (const dot of dotsRef.current) {
-                const ox = dot.cx + dot.xOffset;
-                const oy = dot.cy + dot.yOffset;
                 const dx = dot.cx - px;
                 const dy = dot.cy - py;
                 const dsq = dx * dx + dy * dy;
 
-                let style = baseColor;
-                if (dsq <= proxSq) {
-                    const dist = Math.sqrt(dsq);
-                    const t = 1 - dist / proximity;
-                    const r = Math.round(baseRgb.r + (activeRgb.r - baseRgb.r) * t);
-                    const g = Math.round(baseRgb.g + (activeRgb.g - baseRgb.g) * t);
-                    const b = Math.round(baseRgb.b + (activeRgb.b - baseRgb.b) * t);
-                    style = `rgb(${r},${g},${b})`;
+                if (dsq > proxSq && dot.xOffset === 0 && dot.yOffset === 0) {
+                    // Batch this static dot
+                    ctx.moveTo(dot.cx + dotSize / 2, dot.cy);
+                    ctx.arc(dot.cx, dot.cy, dotSize / 2, 0, Math.PI * 2);
+                } else {
+                    activeDots.push(dot);
                 }
+            }
+            ctx.fill(); // Single draw call for thousands of dots!
 
-                ctx.save();
-                ctx.translate(ox, oy);
-                ctx.fillStyle = style;
-                ctx.fill(circlePath);
-                ctx.restore();
+            // Draw only the few actively moving/glowing dots individually
+            if (activeDots.length > 0) {
+                for (const dot of activeDots) {
+                    const ox = dot.cx + dot.xOffset;
+                    const oy = dot.cy + dot.yOffset;
+                    const dx = dot.cx - px;
+                    const dy = dot.cy - py;
+                    const dsq = dx * dx + dy * dy;
+
+                    let dotStyle = baseColor;
+                    if (dsq <= proxSq) {
+                        const dist = Math.sqrt(dsq);
+                        const t = 1 - dist / proximity;
+                        const r = baseRgb.r + (activeRgb.r - baseRgb.r) * t;
+                        const g = baseRgb.g + (activeRgb.g - baseRgb.g) * t;
+                        const b = baseRgb.b + (activeRgb.b - baseRgb.b) * t;
+                        dotStyle = `rgb(${r | 0},${g | 0},${b | 0})`;
+                    }
+
+                    ctx.beginPath();
+                    ctx.fillStyle = dotStyle;
+                    ctx.arc(ox, oy, dotSize / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             }
 
             rafId = requestAnimationFrame(draw);

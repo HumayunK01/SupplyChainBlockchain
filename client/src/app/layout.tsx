@@ -7,6 +7,7 @@ import Footer from '@/components/Footer'
 import GlobalBackground from '@/components/GlobalBackground'
 import SmoothScroll from '@/components/SmoothScroll'
 import Preloader from '@/components/Preloader'
+import BackToTop from '@/components/BackToTop'
 
 const manrope = Manrope({ subsets: ['latin'], variable: '--font-manrope' })
 
@@ -84,6 +85,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <BackToTop />
         </SmoothScroll>
       </body>
     </html>

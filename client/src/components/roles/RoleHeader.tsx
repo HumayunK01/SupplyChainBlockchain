@@ -17,8 +17,8 @@ export const RoleHeader = ({ currentAccount }: RoleHeaderProps) => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
             >
-                <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">Access Control</h1>
-                <p className="text-slate-500 mt-2 text-lg">Manage node permissions and network participation protocols.</p>
+                <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">Partner Network</h1>
+                <p className="text-slate-500 mt-2 text-lg">Add and authorize trusted partners to the supply chain network.</p>
             </motion.div>
 
             <motion.div

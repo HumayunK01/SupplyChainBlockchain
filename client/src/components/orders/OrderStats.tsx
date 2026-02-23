@@ -25,13 +25,13 @@ export const OrderStats = ({ isOwner, contractOwner, roleCounts, requirementsMet
                             <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-red-500 shadow-sm border border-red-100">
                                 <ShieldCheck size={20} />
                             </div>
-                            <h3 className="font-bold text-red-900">Privileged Action Required</h3>
+                            <h3 className="font-bold text-red-900">Admin Access Required</h3>
                         </div>
                         <p className="text-red-700/80 text-sm leading-relaxed mb-4">
-                            Only the contract supervisor is authorized to initiate new material orders on this protocol.
+                            Only the system administrator can add new medical supplies to the tracking network.
                         </p>
                         <div className="p-3 bg-white/50 rounded-xl border border-red-100">
-                            <div className="text-[10px] uppercase font-bold text-red-400 tracking-widest mb-1">Target Authority</div>
+                            <div className="text-[10px] uppercase font-bold text-red-400 tracking-widest mb-1">System Administrator Identity</div>
                             <div className="text-xs font-mono text-red-900 break-all">{contractOwner}</div>
                         </div>
                     </motion.div>
@@ -47,10 +47,10 @@ export const OrderStats = ({ isOwner, contractOwner, roleCounts, requirementsMet
                             <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-amber-500 shadow-sm border border-amber-100">
                                 <AlertCircle size={20} />
                             </div>
-                            <h3 className="font-bold text-amber-900">Network Under-provisioned</h3>
+                            <h3 className="font-bold text-amber-900">Network Setup Incomplete</h3>
                         </div>
                         <p className="text-amber-700/80 text-sm mb-6">
-                            A minimum of one participant must be registered for each role type to maintain chain integrity.
+                            You must register at least one company for each step of the supply chain before ordering supplies.
                         </p>
 
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

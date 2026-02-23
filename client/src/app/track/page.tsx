@@ -110,7 +110,7 @@ export default function Track() {
     e.preventDefault()
     const targetId = parseInt(id)
     if (isNaN(targetId) || !med[targetId]) {
-      alert('Invalid Asset Identifier')
+      alert('Invalid Medicine ID')
       return
     }
     setActiveTrackingId(targetId)

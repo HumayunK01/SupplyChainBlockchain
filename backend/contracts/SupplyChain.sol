@@ -2,6 +2,7 @@
 pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 contract SupplyChain {
     //Smart Contract owner will be the person who deploys the contract only he can authorize various roles like retailer, Manufacturer,etc
@@ -285,5 +286,44 @@ contract SupplyChain {
             0,
             STAGE.Init
         );
+    }
+
+    // --- Merkle Tree Batch Issuance (V2 Scalability Update) ---
+    struct MedicineBatch {
+        uint256 batchId;
+        bytes32 merkleRoot;
+        uint256 manufacturerId;
+        uint256 timestamp;
+    }
+
+    uint256 public batchCtr = 0;
+    mapping(uint256 => MedicineBatch) public MedicineBatches;
+
+    // O(1) On-Chain Storage: Manufacturer registers 10,000 medicines via 1 Merkle Root
+    function registerMedicineBatch(bytes32 _merkleRoot) public {
+        uint256 _manId = findMAN(msg.sender);
+        require(
+            _manId > 0,
+            "Only registered manufacturers can register a batch"
+        );
+
+        batchCtr++;
+        MedicineBatches[batchCtr] = MedicineBatch(
+            batchCtr,
+            _merkleRoot,
+            _manId,
+            block.timestamp
+        );
+    }
+
+    // Zero-Knowledge Verification: Anyone can instantly verify a single medicine is valid within a batch
+    function verifyMedicineInBatch(
+        uint256 _batchId,
+        bytes32 _leafNode,
+        bytes32[] calldata _merkleProof
+    ) public view returns (bool) {
+        require(_batchId > 0 && _batchId <= batchCtr, "Invalid batch ID");
+        bytes32 root = MedicineBatches[_batchId].merkleRoot;
+        return MerkleProof.verify(_merkleProof, root, _leafNode);
     }
 }

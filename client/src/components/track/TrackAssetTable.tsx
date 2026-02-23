@@ -35,23 +35,23 @@ export const TrackAssetTable = ({ med, medStage, onSelect }: TrackAssetTableProp
                         <Table size={22} />
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-slate-900">Registered Assets</h3>
-                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-0.5">{itemsCount} Units Online</p>
+                        <h3 className="text-xl font-bold text-slate-900">Available Medicines</h3>
+                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-0.5">{itemsCount} Medicines Currently Tracking</p>
                     </div>
                 </div>
             </div>
 
             {itemsCount === 0 ? (
                 <div className="p-16 text-center">
-                    <p className="text-slate-400 font-medium">No assets found on the network.</p>
+                    <p className="text-slate-400 font-medium">No medicines tracking on the network yet.</p>
                 </div>
             ) : (
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[600px]">
                         <thead>
                             <tr className="bg-slate-50/50 border-b border-slate-100">
-                                <th className="pl-12 pr-4 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] w-24 whitespace-nowrap">Asset ID</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">Identity Details</th>
+                                <th className="pl-12 pr-4 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] w-24 whitespace-nowrap">ID</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">Medicine Name</th>
                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">Current Status</th>
                                 <th className="pl-8 pr-12 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-right whitespace-nowrap">Action</th>
                             </tr>
@@ -76,7 +76,7 @@ export const TrackAssetTable = ({ med, medStage, onSelect }: TrackAssetTableProp
                                         </td>
                                         <td className="px-8 py-8 whitespace-nowrap">
                                             <div className="font-bold text-slate-900 text-base leading-tight">{item.name}</div>
-                                            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">Industrial Asset Node</div>
+                                            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">Supply Chain Item</div>
                                         </td>
                                         <td className="px-8 py-8 whitespace-nowrap">
                                             <div className={`inline-flex px-3 py-1 rounded-lg font-bold text-[10px] uppercase tracking-widest ${stageStyles}`}>
@@ -85,7 +85,7 @@ export const TrackAssetTable = ({ med, medStage, onSelect }: TrackAssetTableProp
                                         </td>
                                         <td className="pl-8 pr-12 py-8 text-right whitespace-nowrap">
                                             <div className="inline-flex items-center gap-2">
-                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Analyze Journey</span>
+                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">View History</span>
                                                 <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 group-hover:border-slate-900 group-hover:text-slate-900 group-hover:shadow-xl group-hover:shadow-slate-900/5 transition-all">
                                                     <ArrowRight size={18} />
                                                 </div>

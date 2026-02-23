@@ -102,10 +102,11 @@ const Navbar = () => {
 
     // Role-based navigation links
     const allLinks = [
-        { name: 'Roles', path: '/roles', icon: User, reqRole: ['OWNER'] },
-        { name: 'Order Assets', path: '/addmed', icon: Package, reqRole: ['OWNER'] },
+        { name: 'Partners', path: '/roles', icon: User, reqRole: ['OWNER'] },
+        { name: 'Add Medicines', path: '/addmed', icon: Package, reqRole: ['OWNER'] },
+        { name: 'Bulk Register', path: '/batch', icon: Package, reqRole: ['OWNER', 'MAN'] },
         { name: 'Track', path: '/track', icon: Search, reqRole: ['PUBLIC', 'OWNER', 'RMS', 'MAN', 'DIS', 'RET'] },
-        { name: 'Supply', path: '/supply', icon: Truck, reqRole: ['OWNER', 'RMS', 'MAN', 'DIS', 'RET'] },
+        { name: 'Update Progress', path: '/supply', icon: Truck, reqRole: ['OWNER', 'RMS', 'MAN', 'DIS', 'RET'] },
     ]
 
     const navLinks = allLinks.filter(link => link.reqRole.includes(role) || link.reqRole.includes('PUBLIC'))

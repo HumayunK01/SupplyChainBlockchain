@@ -17,7 +17,7 @@ export const TrackHeader = ({ currentAccount }: TrackHeaderProps) => {
                 animate={{ opacity: 1, x: 0 }}
             >
                 <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">Track Journey</h1>
-                <p className="text-slate-500 mt-2 text-lg">Real-time cryptographic verification of material provenance.</p>
+                <p className="text-slate-500 mt-2 text-lg">Check the real-world status and history of any medical product.</p>
             </motion.div>
 
             <motion.div
@@ -32,7 +32,7 @@ export const TrackHeader = ({ currentAccount }: TrackHeaderProps) => {
                     <div className="text-right pr-1">
                         <div className="flex items-center justify-end gap-1.5 mb-0.5">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            <div className="text-[9px] uppercase font-bold text-slate-400 tracking-widest leading-none">Scanning Network</div>
+                            <div className="text-[9px] uppercase font-bold text-slate-400 tracking-widest leading-none">Network Connected</div>
                         </div>
                         <div className="text-sm font-mono font-bold text-slate-900">{formatAddress(currentAccount)}</div>
                     </div>

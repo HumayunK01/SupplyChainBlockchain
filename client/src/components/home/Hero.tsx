@@ -25,7 +25,7 @@ const Hero = () => {
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-slate-500"></span>
                     </span>
                     <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                        Immutable. Transparent. Decentralized.
+                        Safe. Clear. Open.
                     </span>
                 </motion.div>
 
@@ -36,7 +36,7 @@ const Hero = () => {
                     className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 md:mb-8 leading-[1.2] font-manrope tracking-tight"
                 >
                     <TextType
-                        text={["Architecting Trust in\nGlobal Supply Chains", "Securing Every Step of\nthe Product Journey!"]}
+                        text={["Building Trust in\nthe Medical Supply Chain", "Tracking Every Step of\nthe Medicine Journey!"]}
                         typingSpeed={60}
                         pauseDuration={2000}
                         deletingSpeed={30}
@@ -47,7 +47,7 @@ const Hero = () => {
                 </motion.h1>
 
                 <SplitText
-                    text="Secure your trade ecosystem with our next-generation blockchain platform. End-to-end traceability for every asset, powered by the decentralized web."
+                    text="Keep your supply chain safe with our easy-to-use tracking platform. Follow every medicine from the factory to the patient."
                     className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mb-12 leading-relaxed"
                     delay={20}
                     duration={1}
@@ -91,7 +91,7 @@ const Hero = () => {
                         className="btn-secondary w-full sm:w-auto text-base py-3.5 px-8 rounded-xl flex items-center justify-center gap-2 group"
                     >
                         <Search size={18} className="text-slate-400 group-hover:text-slate-900 transition-colors" />
-                        <span>Track Asset</span>
+                        <span>Track Medicine</span>
                     </motion.button>
                 </AnimatedContent>
             </div>

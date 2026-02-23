@@ -52,6 +52,8 @@ async function main() {
 
   fs.writeFileSync(deploymentsPath, JSON.stringify(deployments, null, 2))
   console.log('Deployment info saved to client/src/deployments.json')
+
+
 }
 
 main()

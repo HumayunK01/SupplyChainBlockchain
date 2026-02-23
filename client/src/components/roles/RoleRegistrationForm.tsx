@@ -45,15 +45,15 @@ export const RoleRegistrationForm = ({
                                     <ShieldCheck size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-red-900 leading-tight">Owner Access Required</h3>
+                                    <h3 className="text-lg font-bold text-red-900 leading-tight">Admin Access Required</h3>
                                     <p className="text-red-700/70 text-sm font-medium mt-0.5">
-                                        Only the contract owner can register new supply chain nodes.
+                                        Only the system administrator can add new partners to the supply chain.
                                     </p>
                                 </div>
                             </div>
 
                             <div className="bg-white/80 backdrop-blur-sm px-5 py-4 rounded-2xl border border-red-100 min-w-0 md:max-w-md w-full">
-                                <div className="text-[10px] uppercase font-black text-red-400 tracking-[0.2em] mb-2">Authorized Protocol Owner</div>
+                                <div className="text-[10px] uppercase font-black text-red-400 tracking-[0.2em] mb-2">System Administrator</div>
                                 <div className="text-xs font-mono font-bold text-red-900 whitespace-nowrap overflow-x-auto pb-1 custom-scrollbar">
                                     {contractOwner || '0x0000000000000000000000000000000000000000'}
                                 </div>
@@ -86,7 +86,7 @@ export const RoleRegistrationForm = ({
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Register New Participant</h2>
-                            <p className="text-slate-400 text-sm font-medium mt-0.5 uppercase tracking-wide">Protocol Entry Management</p>
+                            <p className="text-slate-400 text-sm font-medium mt-0.5 uppercase tracking-wide">System Onboarding</p>
                         </div>
                     </div>
 
@@ -97,7 +97,7 @@ export const RoleRegistrationForm = ({
                         />
 
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Identified Wallet Address</label>
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Partner's Digital Wallet Address</label>
                             <div className="relative">
                                 <Wallet size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
                                 <input
@@ -113,7 +113,7 @@ export const RoleRegistrationForm = ({
                         </div>
 
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Organization Designation</label>
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Company Name</label>
                             <div className="relative">
                                 <Users size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
                                 <input
@@ -129,7 +129,7 @@ export const RoleRegistrationForm = ({
                         </div>
 
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Operational Logistics Base</label>
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Company Location</label>
                             <div className="relative">
                                 <MapPin size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
                                 <input
@@ -155,7 +155,7 @@ export const RoleRegistrationForm = ({
                             {isOwner ? (
                                 <>
                                     <Plus size={22} className="group-hover:rotate-90 transition-transform" />
-                                    <span className="text-lg">Authorize and Transmit Payload</span>
+                                    <span className="text-lg">Add Company to Network</span>
                                 </>
                             ) : (
                                 <>

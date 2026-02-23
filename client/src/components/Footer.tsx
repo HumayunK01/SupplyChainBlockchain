@@ -22,7 +22,7 @@ const Footer = () => {
                             <span className="text-2xl font-bold text-slate-900 font-manrope tracking-tight">SecureChain</span>
                         </Link>
                         <p className="mt-4 text-slate-500 max-w-lg mx-auto text-sm leading-relaxed">
-                            Architecting trust and transparency in global supply chains through state-of-the-art blockchain technology.
+                            Building trust and keeping track of medical supplies with advanced technology.
                         </p>
                     </motion.div>
 
@@ -34,19 +34,19 @@ const Footer = () => {
                         transition={{ delay: 0.1 }}
                         className="flex flex-wrap justify-center gap-x-10 gap-y-4 mb-10"
                     >
-                        <Link href="/roles" className="text-slate-600 hover:text-slate-900 text-base font-semibold transition-colors">Roles</Link>
-                        <Link href="/addmed" className="text-slate-600 hover:text-slate-900 text-base font-semibold transition-colors">Orders</Link>
+                        <Link href="/roles" className="text-slate-600 hover:text-slate-900 text-base font-semibold transition-colors">Partners</Link>
+                        <Link href="/addmed" className="text-slate-600 hover:text-slate-900 text-base font-semibold transition-colors">Add Medicines</Link>
                         <Link href="/track" className="text-slate-600 hover:text-slate-900 text-base font-semibold transition-colors">Track</Link>
-                        <Link href="/supply" className="text-slate-600 hover:text-slate-900 text-base font-semibold transition-colors">Supply</Link>
+                        <Link href="/supply" className="text-slate-600 hover:text-slate-900 text-base font-semibold transition-colors">Progress</Link>
                         <Link href="#" className="text-slate-600 hover:text-slate-900 text-base font-semibold transition-colors">Privacy</Link>
                     </motion.div>
                     <div className="w-full pt-8 border-t border-slate-100 flex flex-col items-center">
                         <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.25em] mb-4">
-                            © 2026 SecureChain • Immutability Guaranteed
+                            © 2026 SecureChain
                         </p>
                         <div className="flex items-center space-x-2 text-[10px] text-slate-300">
                             <span className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse"></span>
-                            <span>Mainnet Live</span>
+                            <span>System Online</span>
                         </div>
                     </div>
                 </div>

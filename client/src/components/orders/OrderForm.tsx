@@ -46,20 +46,20 @@ export const OrderForm = ({
                         <Package size={24} />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-900">Provision Resource</h2>
-                        <p className="text-slate-500 text-sm">Deploy a new asset tracking instance to the blockchain</p>
+                        <h2 className="text-2xl font-bold text-slate-900">Create New Medicine</h2>
+                        <p className="text-slate-500 text-sm">Add a new medical product to the tracking system</p>
                     </div>
                 </div>
 
                 <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Resource Identity</label>
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Medicine Name</label>
                         <div className="relative">
                             <Package size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input
                                 className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-12 pr-4 py-3.5 text-slate-900 font-semibold focus:ring-2 focus:ring-slate-900/5 focus:border-slate-900 outline-none transition-all placeholder:text-slate-300"
                                 type="text"
-                                placeholder="Material Name (e.g. Rare Earth Magnet)"
+                                placeholder="e.g. Aspirin 500mg"
                                 onChange={(e) => setMedName(e.target.value)}
                                 value={medName}
                                 required
@@ -69,13 +69,13 @@ export const OrderForm = ({
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Technical Specification</label>
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Description</label>
                         <div className="relative">
                             <FileText size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input
                                 className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-12 pr-4 py-3.5 text-slate-900 font-semibold focus:ring-2 focus:ring-slate-900/5 focus:border-slate-900 outline-none transition-all placeholder:text-slate-300"
                                 type="text"
-                                placeholder="Detailed Description or SKU"
+                                placeholder="e.g. Batch of 100 boxes"
                                 onChange={(e) => setMedDes(e.target.value)}
                                 value={medDes}
                                 required
@@ -97,12 +97,12 @@ export const OrderForm = ({
                         ) : isOwner && requirementsMet ? (
                             <>
                                 <Plus size={20} className="group-hover:rotate-90 transition-transform" />
-                                <span>Authorize Chain Deployment</span>
+                                <span>Add Medicine to System</span>
                             </>
                         ) : (
                             <>
                                 <ShieldCheck size={20} />
-                                <span>Protocol Locked</span>
+                                <span>System Locked</span>
                             </>
                         )}
                     </button>

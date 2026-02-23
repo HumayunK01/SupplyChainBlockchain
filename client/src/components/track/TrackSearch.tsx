@@ -30,14 +30,14 @@ export const TrackSearch = ({ id, setId, onSubmit }: TrackSearchProps) => {
                         <Hash size={28} />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Chain Inquiry</h2>
-                        <p className="text-slate-400 text-sm font-medium mt-0.5 uppercase tracking-wide">Ledger History Retrieval</p>
+                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Search for Medicine</h2>
+                        <p className="text-slate-400 text-sm font-medium mt-0.5 uppercase tracking-wide">Find a specific medical product</p>
                     </div>
                 </div>
 
                 <form onSubmit={onSubmit} className="flex flex-col md:flex-row gap-6">
                     <div className="flex-1 space-y-3">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Target Asset Identifier</label>
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Medicine ID Number</label>
                         <div className="relative">
                             <Search size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input
@@ -55,7 +55,7 @@ export const TrackSearch = ({ id, setId, onSubmit }: TrackSearchProps) => {
                             type="submit"
                             className="px-12 py-5 bg-slate-900 text-white rounded-2xl font-bold shadow-2xl shadow-slate-900/10 active:scale-[0.98] hover:bg-slate-800 transition-all flex items-center justify-center gap-3 group h-[68px]"
                         >
-                            <span className="text-lg">Query Ledger History</span>
+                            <span className="text-lg">Track Medicine</span>
                             <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
                         </button>
                     </div>

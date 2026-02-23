@@ -31,11 +31,11 @@ export const SupplyControl = ({
 }: SupplyControlProps) => {
 
     const allSteps = [
-        { id: 1, reqRole: 'RMS', title: 'RMS Provisioning', desc: 'Secure material handover', icon: MapPin, val: rmsId, setVal: onRMSChange, sub: onRMSSubmit },
-        { id: 2, reqRole: 'MAN', title: 'Asset Fabrication', desc: 'Authorized manufacturing', icon: Building2, val: manId, setVal: onManChange, sub: onManSubmit },
-        { id: 3, reqRole: 'DIS', title: 'Global Logistics', desc: 'Network distribution', icon: Truck, val: disId, setVal: onDisChange, sub: onDisSubmit },
-        { id: 4, reqRole: 'RET', title: 'Point of Sale', desc: 'Retailer integration', icon: ShoppingBag, val: retId, setVal: onRetChange, sub: onRetSubmit },
-        { id: 5, reqRole: 'RET', title: 'End Transmission', desc: 'Final consumer delivery', icon: CheckCircle2, val: soldId, setVal: onSoldChange, sub: onSoldSubmit }
+        { id: 1, reqRole: 'RMS', title: 'Raw Materials', desc: 'Source ingredients', icon: MapPin, val: rmsId, setVal: onRMSChange, sub: onRMSSubmit },
+        { id: 2, reqRole: 'MAN', title: 'Manufacturing', desc: 'Create the product', icon: Building2, val: manId, setVal: onManChange, sub: onManSubmit },
+        { id: 3, reqRole: 'DIS', title: 'Distribution', desc: 'Ship to pharmacies', icon: Truck, val: disId, setVal: onDisChange, sub: onDisSubmit },
+        { id: 4, reqRole: 'RET', title: 'Retail', desc: 'Receive at pharmacy', icon: ShoppingBag, val: retId, setVal: onRetChange, sub: onRetSubmit },
+        { id: 5, reqRole: 'RET', title: 'Sold to Customer', desc: 'Hand to patient', icon: CheckCircle2, val: soldId, setVal: onSoldChange, sub: onSoldSubmit }
     ]
 
     const steps = allSteps.filter(step => role === 'OWNER' || role === step.reqRole)
@@ -43,7 +43,7 @@ export const SupplyControl = ({
     if (role === 'PUBLIC') {
         return (
             <div className="bg-slate-50 border border-slate-100 rounded-2xl p-8 text-center">
-                <p className="text-slate-500 font-medium">You must be connected with an authorized participant node to interact with supply line terminals.</p>
+                <p className="text-slate-500 font-medium">You must be logged in as an authorized company to update the supply chain.</p>
             </div>
         )
     }
@@ -82,7 +82,7 @@ export const SupplyControl = ({
 
                             <form onSubmit={step.sub} className="space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Target Asset ID</label>
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Medicine ID</label>
                                     <div className="relative">
                                         <input
                                             type="text"
@@ -98,7 +98,7 @@ export const SupplyControl = ({
                                     type="submit"
                                     className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 shadow-xl shadow-slate-900/10 active:scale-[0.97] transition-all hover:bg-slate-800"
                                 >
-                                    <span>Execute Handover</span>
+                                    <span>Update Block</span>
                                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                 </button>
                             </form>

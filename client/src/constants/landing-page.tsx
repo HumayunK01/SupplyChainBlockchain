@@ -11,8 +11,8 @@ export const STATS_DATA = [
 export const FEATURES_DATA = [
     {
         path: '/roles',
-        title: 'Register Roles',
-        description: 'Assign roles to participants in the supply chain with cryptographic security.',
+        title: 'Partner Network',
+        description: 'Add and authorize trusted companies to the supply chain network.',
         icon: (
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -22,8 +22,8 @@ export const FEATURES_DATA = [
     },
     {
         path: '/addmed',
-        title: 'Order Materials',
-        description: 'Create and manage new material orders in the immutable ledger.',
+        title: 'Add Medicines',
+        description: 'Add new medical products to the secure tracking system.',
         icon: (
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -33,8 +33,8 @@ export const FEATURES_DATA = [
     },
     {
         path: '/track',
-        title: 'Track Materials',
-        description: 'Real-time monitoring of products throughout the global supply chain.',
+        title: 'Track Medicines',
+        description: 'Check the real-world status and history of any medical product.',
         icon: (
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -44,8 +44,8 @@ export const FEATURES_DATA = [
     },
     {
         path: '/supply',
-        title: 'Supply Solutions',
-        description: 'Optimize Transitions and manage inventory with data-driven insights.',
+        title: 'Update Progress',
+        description: 'Log movements of medicines through the supply chain.',
         icon: (
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

@@ -12,7 +12,7 @@ const FeaturesGrid = () => {
                 <div className="text-center mb-12 md:mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4 font-manrope">Everything you need</h2>
                     <p className="text-slate-500 max-w-xl mx-auto text-sm md:text-base">
-                        Our platform offers a comprehensive suite of tools to manage every aspect of your decentralized supply chain.
+                        Our platform offers everything you need to manage your medical supply chain easily and securely.
                     </p>
                 </div>
 

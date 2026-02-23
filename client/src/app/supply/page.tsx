@@ -138,17 +138,17 @@ export default function Supply() {
                 </svg>
               </motion.div>
             </div>
-            Operational Terminals
+            Control Panels
           </h3>
           <SupplyControl
             role={role}
             rmsId={rmsId} manId={manId} disId={disId} retId={retId} soldId={soldId}
             onRMSChange={setRmsId} onManChange={setManId} onDisChange={setDisId} onRetChange={setRetId} onSoldChange={setSoldId}
-            onRMSSubmit={(e) => { e.preventDefault(); handleAction('RMS', rmsId, 'RMS Supply Verified', setRmsId) }}
-            onManSubmit={(e) => { e.preventDefault(); handleAction('MAN', manId, 'Manufacturing Verified', setManId) }}
-            onDisSubmit={(e) => { e.preventDefault(); handleAction('DIS', disId, 'Distribution Verified', setDisId) }}
-            onRetSubmit={(e) => { e.preventDefault(); handleAction('RET', retId, 'Retail Integration Verified', setRetId) }}
-            onSoldSubmit={(e) => { e.preventDefault(); handleAction('SOLD', soldId, 'Asset Transfer Finalized', setSoldId) }}
+            onRMSSubmit={(e) => { e.preventDefault(); handleAction('RMS', rmsId, 'Raw Materials Handed Over', setRmsId) }}
+            onManSubmit={(e) => { e.preventDefault(); handleAction('MAN', manId, 'Manufacturing Complete', setManId) }}
+            onDisSubmit={(e) => { e.preventDefault(); handleAction('DIS', disId, 'Handed to Distributor', setDisId) }}
+            onRetSubmit={(e) => { e.preventDefault(); handleAction('RET', retId, 'Arrived at Pharmacy', setRetId) }}
+            onSoldSubmit={(e) => { e.preventDefault(); handleAction('SOLD', soldId, 'Medicine Sold to Customer', setSoldId) }}
           />
         </div>
 

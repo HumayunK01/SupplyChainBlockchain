@@ -16,8 +16,8 @@ export const OrderHeader = ({ currentAccount }: OrderHeaderProps) => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
             >
-                <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">Order Materials</h1>
-                <p className="text-slate-500 mt-2 text-lg">Initiate and track asset creation across the distributed ledger.</p>
+                <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">Order Assets</h1>
+                <p className="text-slate-500 mt-2 text-lg">Create new medicines and add them to the supply chain tracking system.</p>
             </motion.div>
 
             <motion.div
@@ -32,7 +32,7 @@ export const OrderHeader = ({ currentAccount }: OrderHeaderProps) => {
                     <div className="text-right pr-1">
                         <div className="flex items-center justify-end gap-1.5 mb-0.5">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            <div className="text-[9px] uppercase font-bold text-slate-400 tracking-widest leading-none">Terminal Connected</div>
+                            <div className="text-[9px] uppercase font-bold text-slate-400 tracking-widest leading-none">Wallet Logged In</div>
                         </div>
                         <div className="text-sm font-mono font-bold text-slate-900">{formatAddress(currentAccount)}</div>
                     </div>

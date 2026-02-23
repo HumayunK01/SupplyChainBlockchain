@@ -17,8 +17,8 @@ export const SupplyHeader = ({ currentAccount }: SupplyHeaderProps) => {
                 animate={{ opacity: 1, x: 0 }}
                 className="text-center md:text-left"
             >
-                <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">Material Workflow</h1>
-                <p className="text-slate-500 mt-2 text-base md:text-lg max-w-md mx-auto md:mx-0">Execute and validate state transitions through the supply chain hierarchy.</p>
+                <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">Supply Chain Steps</h1>
+                <p className="text-slate-500 mt-2 text-base md:text-lg max-w-md mx-auto md:mx-0">Move medical products through the supply chain from raw materials to the patient.</p>
             </motion.div>
 
             <motion.div
@@ -33,7 +33,7 @@ export const SupplyHeader = ({ currentAccount }: SupplyHeaderProps) => {
                     <div className="text-right pr-1">
                         <div className="flex items-center justify-end gap-1.5 mb-0.5">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            <div className="text-[9px] uppercase font-bold text-slate-400 tracking-widest leading-none">Authorization Active</div>
+                            <div className="text-[9px] uppercase font-bold text-slate-400 tracking-widest leading-none">Wallet Connected</div>
                         </div>
                         <div className="text-sm font-mono font-bold text-slate-900">{formatAddress(currentAccount)}</div>
                     </div>

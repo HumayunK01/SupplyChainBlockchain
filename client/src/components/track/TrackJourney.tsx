@@ -19,11 +19,11 @@ interface TrackJourneyProps {
 export const TrackJourney = ({ medicineId, med, medStage, rms, man, dis, ret, onBack }: TrackJourneyProps) => {
     const steps = [
         { label: 'Order Initiated', role: null, completed: true, icon: CheckCircle2 },
-        { label: 'Resource Provisioned', role: rms, completed: !!rms, icon: ShieldCheck },
-        { label: 'Authorized Manufacture', role: man, completed: !!man, icon: Building2 },
-        { label: 'Logistics Handover', role: dis, completed: !!dis, icon: Truck },
-        { label: 'Retail Integration', role: ret, completed: !!ret, icon: ShoppingBag },
-        { label: 'Consumer Transfer', role: null, completed: medStage.includes('Sold'), icon: User },
+        { label: 'Raw Materials Sourced', role: rms, completed: !!rms, icon: ShieldCheck },
+        { label: 'Manufacturing', role: man, completed: !!man, icon: Building2 },
+        { label: 'Shipping', role: dis, completed: !!dis, icon: Truck },
+        { label: 'Received at Pharmacy', role: ret, completed: !!ret, icon: ShoppingBag },
+        { label: 'Sold to Patient', role: null, completed: medStage.includes('Sold'), icon: User },
     ]
 
     const batteryData = {
@@ -43,8 +43,8 @@ export const TrackJourney = ({ medicineId, med, medStage, rms, man, dis, ret, on
                     <ArrowLeft size={20} className="group-hover:-translate-x-0.5 transition-transform" />
                 </button>
                 <div className="text-center md:text-left">
-                    <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Asset Profile: {med.name}</h2>
-                    <p className="text-slate-500 font-medium text-sm md:text-base">Tracking identifier: #{med.id}</p>
+                    <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Medicine: {med.name}</h2>
+                    <p className="text-slate-500 font-medium text-sm md:text-base">ID: #{med.id}</p>
                 </div>
             </div>
 
@@ -70,8 +70,8 @@ export const TrackJourney = ({ medicineId, med, medStage, rms, man, dis, ret, on
                                     <MapPin size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-2xl font-black text-slate-900 tracking-tight">Chain Sequence</h3>
-                                    <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.2em] mt-0.5">Sequential State Validation</p>
+                                    <h3 className="text-2xl font-black text-slate-900 tracking-tight">Supply Chain History</h3>
+                                    <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.2em] mt-0.5">Step-by-step Tracking</p>
                                 </div>
                             </div>
 
@@ -100,15 +100,15 @@ export const TrackJourney = ({ medicineId, med, medStage, rms, man, dis, ret, on
                                                 {step.role ? (
                                                     <div className="bg-slate-50/50 backdrop-blur-sm rounded-[1.5rem] p-6 border border-slate-100 space-y-4">
                                                         <div className="flex items-center justify-between gap-4 border-b border-slate-100 pb-3">
-                                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] shrink-0">Network Authority</span>
+                                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] shrink-0">Company Name</span>
                                                             <span className="text-slate-900 font-bold text-sm truncate whitespace-nowrap">{step.role.name}</span>
                                                         </div>
                                                         <div className="flex items-center justify-between gap-4 border-b border-slate-100 pb-3">
-                                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] shrink-0">Operational Node</span>
+                                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] shrink-0">Location</span>
                                                             <span className="text-slate-900 font-bold text-sm truncate whitespace-nowrap">{step.role.place}</span>
                                                         </div>
                                                         <div className="overflow-hidden">
-                                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-2">Protocol Access Key</span>
+                                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-2">Wallet Address</span>
                                                             <div className="bg-white border border-slate-100 px-3 py-2 rounded-xl text-slate-400 font-mono text-[10px] whitespace-nowrap overflow-x-auto pb-1 custom-scrollbar">
                                                                 {step.role.addr}
                                                             </div>
@@ -116,10 +116,10 @@ export const TrackJourney = ({ medicineId, med, medStage, rms, man, dis, ret, on
                                                     </div>
                                                 ) : step.completed ? (
                                                     <div className="bg-slate-50/50 rounded-2xl px-5 py-4 border border-emerald-100/30">
-                                                        <p className="text-slate-500 text-sm font-medium italic">Automated protocol confirmation successful. State transition finalized on-chain.</p>
+                                                        <p className="text-slate-500 text-sm font-medium italic">This step was completed successfully and recorded on the blockchain.</p>
                                                     </div>
                                                 ) : (
-                                                    <p className="text-slate-300 text-sm font-medium italic">Awaiting upstream processing or peer endorsement...</p>
+                                                    <p className="text-slate-300 text-sm font-medium italic">Waiting for the previous steps to finish...</p>
                                                 )}
                                             </div>
                                         </div>
@@ -144,8 +144,8 @@ export const TrackJourney = ({ medicineId, med, medStage, rms, man, dis, ret, on
                                     <ShieldCheck size={28} className="text-white" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-black tracking-tight leading-none mb-1">Ledger Passport</h3>
-                                    <span className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em]">Asset QR Integrity</span>
+                                    <h3 className="text-xl font-black tracking-tight leading-none mb-1">Product QR Code</h3>
+                                    <span className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em]">Scan to verify</span>
                                 </div>
                             </div>
 
@@ -160,7 +160,7 @@ export const TrackJourney = ({ medicineId, med, medStage, rms, man, dis, ret, on
                             </div>
 
                             <p className="text-white/60 text-xs text-center font-bold uppercase tracking-wider leading-relaxed">
-                                Cryptographically Unique Access Token
+                                Unique digital fingerprint for this product
                             </p>
                         </div>
                     </motion.div>
@@ -179,16 +179,16 @@ export const TrackJourney = ({ medicineId, med, medStage, rms, man, dis, ret, on
                             }}
                         />
                         <div className="relative z-10">
-                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-10">System Metadata</h4>
+                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-10">Medicine Details</h4>
                             <div className="space-y-10">
                                 <div className="grid grid-cols-1 gap-3">
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] pl-1">Functional Spec</span>
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] pl-1">Description</span>
                                     <div className="bg-slate-50/50 p-5 rounded-2xl border border-slate-100">
                                         <p className="text-slate-600 text-sm font-bold leading-relaxed">{med.description}</p>
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 gap-3">
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] pl-1">Network Persistence</span>
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] pl-1">Current Status</span>
                                     <div className="flex items-center gap-3 bg-white border border-slate-100 p-4 rounded-2xl shadow-sm">
                                         <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                                         <span className="text-slate-900 font-black text-sm uppercase tracking-wider">{medStage}</span>

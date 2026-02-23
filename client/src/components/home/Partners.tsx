@@ -8,7 +8,7 @@ const Partners = () => {
         <section className="py-20">
             <div className="container mx-auto px-6 mb-12 text-center">
                 <h3 className="text-xl font-bold text-slate-400 font-manrope uppercase tracking-[0.2em] text-sm">
-                    Empowered by Industry Leaders
+                    Powered By Secure Technology
                 </h3>
             </div>
             <div className="relative">

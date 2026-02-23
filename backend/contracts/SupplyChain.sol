@@ -1,13 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+
 contract SupplyChain {
     //Smart Contract owner will be the person who deploys the contract only he can authorize various roles like retailer, Manufacturer,etc
     address public Owner;
+    IERC721 public certificateToken;
 
     //note this constructor will be called when smart contract will be deployed on blockchain
-    constructor() {
+    constructor(address _certificateAddress) {
         Owner = msg.sender;
+        certificateToken = IERC721(_certificateAddress);
     }
 
     //Roles (flow of pharma supply chain)
@@ -60,11 +64,9 @@ contract SupplyChain {
     mapping(uint256 => medicine) public MedicineStock;
 
     //To show status to client applications
-    function showStage(uint256 _medicineID)
-        public
-        view
-        returns (string memory)
-    {
+    function showStage(
+        uint256 _medicineID
+    ) public view returns (string memory) {
         require(medicineCtr > 0);
         if (MedicineStock[_medicineID].stage == STAGE.Init)
             return "Medicine Ordered";
@@ -129,7 +131,11 @@ contract SupplyChain {
         address _address,
         string memory _name,
         string memory _place
-    ) public onlyByOwner() {
+    ) public onlyByOwner {
+        require(
+            certificateToken.balanceOf(_address) > 0,
+            "SupplyChain: Address does not hold a valid Soulbound Certificate"
+        );
         rmsCtr++;
         RMS[rmsCtr] = rawMaterialSupplier(_address, rmsCtr, _name, _place);
     }
@@ -139,7 +145,11 @@ contract SupplyChain {
         address _address,
         string memory _name,
         string memory _place
-    ) public onlyByOwner() {
+    ) public onlyByOwner {
+        require(
+            certificateToken.balanceOf(_address) > 0,
+            "SupplyChain: Address does not hold a valid Soulbound Certificate"
+        );
         manCtr++;
         MAN[manCtr] = manufacturer(_address, manCtr, _name, _place);
     }
@@ -149,7 +159,11 @@ contract SupplyChain {
         address _address,
         string memory _name,
         string memory _place
-    ) public onlyByOwner() {
+    ) public onlyByOwner {
+        require(
+            certificateToken.balanceOf(_address) > 0,
+            "SupplyChain: Address does not hold a valid Soulbound Certificate"
+        );
         disCtr++;
         DIS[disCtr] = distributor(_address, disCtr, _name, _place);
     }
@@ -159,7 +173,11 @@ contract SupplyChain {
         address _address,
         string memory _name,
         string memory _place
-    ) public onlyByOwner() {
+    ) public onlyByOwner {
+        require(
+            certificateToken.balanceOf(_address) > 0,
+            "SupplyChain: Address does not hold a valid Soulbound Certificate"
+        );
         retCtr++;
         RET[retCtr] = retailer(_address, retCtr, _name, _place);
     }
@@ -251,10 +269,10 @@ contract SupplyChain {
     }
 
     // To add new medicines to the stock
-    function addMedicine(string memory _name, string memory _description)
-        public
-        onlyByOwner()
-    {
+    function addMedicine(
+        string memory _name,
+        string memory _description
+    ) public onlyByOwner {
         require((rmsCtr > 0) && (manCtr > 0) && (disCtr > 0) && (retCtr > 0));
         medicineCtr++;
         MedicineStock[medicineCtr] = medicine(

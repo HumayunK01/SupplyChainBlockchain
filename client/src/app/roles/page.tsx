@@ -18,6 +18,7 @@ export default function AssignRoles() {
   const [currentAccount, setCurrentAccount] = useState('')
   const [loading, setLoading] = useState(true)
   const [supplyChain, setSupplyChain] = useState<any>(null)
+  const [sbtContract, setSbtContract] = useState<any>(null)
   const [isOwner, setIsOwner] = useState(false)
   const [contractOwner, setContractOwner] = useState<string>('')
   const [roles, setRoles] = useState<RolesState>({
@@ -45,8 +46,9 @@ export default function AssignRoles() {
   const loadBlockchainData = async () => {
     try {
       setLoading(true)
-      const { contract, account } = await getContract()
+      const { contract, sbtContract: sbt, account } = await getContract()
       setSupplyChain(contract)
+      setSbtContract(sbt)
       setCurrentAccount(account)
 
       const userRole = await getUserIdentity(account)
@@ -101,6 +103,11 @@ export default function AssignRoles() {
     const { address, name, place, type } = newRole
 
     try {
+      // 1. Issue Soulbound Certificate first
+      const uri = `ipfs://certificate-${type}-${Date.now()}`
+      await sbtContract.methods.issueCertificate(address, uri).send({ from: currentAccount })
+
+      // 2. Add Role
       let method
       switch (type) {
         case 'rms': method = supplyChain.methods.addRMS(address, name, place); break
@@ -113,7 +120,7 @@ export default function AssignRoles() {
       await method.send({ from: currentAccount })
       await loadBlockchainData()
       setNewRole({ address: '', name: '', place: '', type: 'rms' })
-      alert('Participant registered successfully!')
+      alert('Certificate issued and participant registered successfully!')
     } catch (err: any) {
       console.error('Transaction error:', err)
       alert(err?.message || 'Transaction failed')

@@ -28,6 +28,33 @@ export default function BatchMinting() {
             await loadBlockchainData()
         }
         init()
+
+        // Restore Merkle state from localStorage so verification can persist after reload
+        try {
+            const savedBatchName = localStorage.getItem('vbulk_batchName')
+            const savedBatchQty = localStorage.getItem('vbulk_batchQty')
+            if (savedBatchName && savedBatchQty) {
+                const qty = Number(savedBatchQty)
+                if (qty > 0) {
+                    setBatchName(savedBatchName)
+                    setBatchQty(qty)
+
+                    const leaves = []
+                    for (let i = 0; i < qty; i++) {
+                        const data = `${savedBatchName}_Item_${i}`
+                        leaves.push(keccak256(data))
+                    }
+
+                    const tree = new MerkleTree(leaves, keccak256, { sortPairs: true })
+                    const root = tree.getHexRoot()
+
+                    setMerkleTree(tree)
+                    setMerkleRoot(root)
+                }
+            }
+        } catch (e) {
+            console.error("Failed to restore batch from local storage", e)
+        }
     }, [])
 
     const loadBlockchainData = async () => {
@@ -62,6 +89,13 @@ export default function BatchMinting() {
 
         setMerkleTree(tree)
         setMerkleRoot(root)
+
+        try {
+            localStorage.setItem('vbulk_batchName', batchName)
+            localStorage.setItem('vbulk_batchQty', qty.toString())
+        } catch (e) {
+            console.error("Failed to save batch to local storage", e)
+        }
     }
 
     // 2. Upload Root to Blockchain
@@ -113,7 +147,7 @@ export default function BatchMinting() {
                         Bulk Medicine Registration
                     </h1>
                     <p className="text-slate-500 text-lg max-w-2xl">
-                        Instantly secure thousands of medical items at once. Instead of paying fees to track every single pill, this tool bundles them into one secure digital "watermark". This makes mass-production tracking incredibly cheap and perfectly secure.
+                        Instantly secure thousands of medical items at once. Instead of paying fees to track every single pill, this tool bundles them into one secure digital &quot;watermark&quot;. This makes mass-production tracking incredibly cheap and perfectly secure.
                     </p>
                 </div>
 

@@ -2,10 +2,10 @@
   "networks": {
     "1337": {
       "SupplyChain": {
-        "address": "0x437958cE805E3b0ad8D7a61172b6e79932e5C7f2"
+        "address": "0x1305c3553ACD23C6DDB9a5Aaf9B1E8CbcA855A3E"
       },
       "CertificateSBT": {
-        "address": "0x0CA40E1dD8661eb515114b5e1Db01aB825c9CbA5"
+        "address": "0x8eD498ABBc842edE92503615D967078680fFFDe9"
       }
     }
   }

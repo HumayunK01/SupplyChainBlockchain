@@ -7,12 +7,14 @@ import { MerkleTree } from 'merkletreejs'
 import keccak256 from 'keccak256'
 import { Database, ShieldCheck, Zap, Activity, Clock, Hash, BarChart3, TrendingDown } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { uploadBatchToIPFS } from '@/lib/pinata'
 
 interface BatchRecord {
     batchId: string
     merkleRoot: string
     manufacturerId: string
     timestamp: string
+    ipfsCID: string
 }
 
 export default function BatchMinting() {
@@ -88,6 +90,7 @@ export default function BatchMinting() {
                     merkleRoot: b.merkleRoot,
                     manufacturerId: String(b.manufacturerId),
                     timestamp: String(b.timestamp),
+                    ipfsCID: b.ipfsCID || '',
                 })))
             }
 
@@ -132,7 +135,20 @@ export default function BatchMinting() {
         if (!supplyChain || !merkleRoot) return
         setIsMinting(true)
         try {
-            const receipt = await supplyChain.methods.registerMedicineBatch(merkleRoot).send({ from: currentAccount })
+            // Upload full batch manifest to IPFS
+            toast('Uploading batch manifest to IPFS...', { icon: '📤' })
+            const qty = Number(batchQty)
+            const medicines = Array.from({ length: qty }, (_, i) => `${batchName}_Item_${i}`)
+            const ipfsCid = await uploadBatchToIPFS({
+                batchName,
+                quantity: qty,
+                medicines,
+                merkleRoot,
+                manufacturer: currentAccount,
+                registeredAt: new Date().toISOString(),
+            })
+
+            const receipt = await supplyChain.methods.registerMedicineBatch(merkleRoot, ipfsCid).send({ from: currentAccount })
             setLastGasUsed(Number(receipt.gasUsed))
             toast.success(`Batch of ${batchQty} '${batchName}' recorded on-chain successfully!`)
             await loadBlockchainData()
@@ -372,6 +388,7 @@ export default function BatchMinting() {
                                         <th className="pl-8 pr-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Batch ID</th>
                                         <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Merkle Root</th>
                                         <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Manufacturer</th>
+                                        <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">IPFS Manifest</th>
                                         <th className="pl-4 pr-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Registered</th>
                                     </tr>
                                 </thead>
@@ -395,6 +412,21 @@ export default function BatchMinting() {
                                                 <span className="px-3 py-1.5 bg-blue-50 border border-blue-100 rounded-lg text-xs font-bold text-blue-700">
                                                     MAN #{batch.manufacturerId}
                                                 </span>
+                                            </td>
+                                            <td className="px-4 py-5">
+                                                {batch.ipfsCID ? (
+                                                    <a
+                                                        href={`https://ipfs.io/ipfs/${batch.ipfsCID}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cyan-50 border border-cyan-100 rounded-lg text-xs font-bold text-cyan-700 hover:bg-cyan-100 transition-colors"
+                                                    >
+                                                        <Database size={12} />
+                                                        View on IPFS
+                                                    </a>
+                                                ) : (
+                                                    <span className="text-xs text-slate-400 font-semibold">N/A</span>
+                                                )}
                                             </td>
                                             <td className="pl-4 pr-8 py-5">
                                                 <span className="text-sm font-semibold text-slate-600">

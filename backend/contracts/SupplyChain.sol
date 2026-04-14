@@ -310,13 +310,14 @@ contract SupplyChain {
         bytes32 merkleRoot;
         uint256 manufacturerId;
         uint256 timestamp;
+        string ipfsCID;
     }
 
     uint256 public batchCtr = 0;
     mapping(uint256 => MedicineBatch) public MedicineBatches;
 
     // O(1) On-Chain Storage: Manufacturer registers 10,000 medicines via 1 Merkle Root
-    function registerMedicineBatch(bytes32 _merkleRoot) public {
+    function registerMedicineBatch(bytes32 _merkleRoot, string memory _ipfsCID) public {
         uint256 _manId = findMAN(msg.sender);
         require(
             _manId > 0,
@@ -328,7 +329,8 @@ contract SupplyChain {
             batchCtr,
             _merkleRoot,
             _manId,
-            block.timestamp
+            block.timestamp,
+            _ipfsCID
         );
         emit BatchRegistered(batchCtr, _merkleRoot, _manId, block.timestamp);
     }

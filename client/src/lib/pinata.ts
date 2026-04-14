@@ -54,6 +54,60 @@ export async function uploadCertificateToIPFS(metadata: CertificateMetadata): Pr
     return `ipfs://${data.IpfsHash}`
 }
 
+interface BatchMetadata {
+    batchName: string
+    quantity: number
+    medicines: string[]
+    merkleRoot: string
+    manufacturer: string
+    registeredAt: string
+}
+
+/**
+ * Uploads batch metadata (full medicine list) to IPFS via Pinata.
+ * Returns the IPFS CID (without ipfs:// prefix) for on-chain storage.
+ */
+export async function uploadBatchToIPFS(metadata: BatchMetadata): Promise<string> {
+    if (!PINATA_JWT) {
+        console.warn('Pinata JWT not configured')
+        return ''
+    }
+
+    const body = {
+        pinataContent: {
+            name: `${metadata.batchName} — Batch of ${metadata.quantity}`,
+            description: 'SecureChain Merkle batch medicine manifest',
+            batchName: metadata.batchName,
+            quantity: metadata.quantity,
+            merkleRoot: metadata.merkleRoot,
+            manufacturer: metadata.manufacturer,
+            registeredAt: metadata.registeredAt,
+            medicines: metadata.medicines,
+        },
+        pinataMetadata: {
+            name: `Batch-${metadata.batchName}-${metadata.quantity}-${Date.now()}`,
+        },
+    }
+
+    const res = await fetch('https://api.pinata.cloud/pinning/pinJSONToIPFS', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${PINATA_JWT}`,
+        },
+        body: JSON.stringify(body),
+    })
+
+    if (!res.ok) {
+        const err = await res.text()
+        console.error('Pinata batch upload failed:', err)
+        return ''
+    }
+
+    const data = await res.json()
+    return data.IpfsHash
+}
+
 /**
  * Unpins a file from Pinata so it's no longer served via IPFS gateways.
  * The CID becomes inaccessible once garbage-collected by the network.

@@ -9,6 +9,9 @@ contract CertificateSBT is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
+    // Maps address to their token ID for easy lookup
+    mapping(address => uint256) public certificateOf;
+
     constructor() ERC721("Pharma Supply Chain Certificate", "PSCC") {}
 
     function issueCertificate(address to, string memory uri) public onlyOwner {
@@ -17,6 +20,14 @@ contract CertificateSBT is ERC721URIStorage, Ownable {
 
         _mint(to, newItemId);
         _setTokenURI(newItemId, uri);
+        certificateOf[to] = newItemId;
+    }
+
+    function revokeCertificate(address holder) public onlyOwner {
+        uint256 tokenId = certificateOf[holder];
+        require(tokenId != 0, "CertificateSBT: No certificate found for this address");
+        _burn(tokenId);
+        delete certificateOf[holder];
     }
 
     function _beforeTokenTransfer(

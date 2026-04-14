@@ -155,7 +155,22 @@ export default function AssignRoles() {
             onSubmit={handleRoleSubmit}
           />
 
-          <RoleGroupList roles={roles} sbtContract={sbtContract} />
+          <RoleGroupList
+            roles={roles}
+            sbtContract={sbtContract}
+            isOwner={isOwner}
+            currentAccount={currentAccount}
+            onRevoke={async (addr: string) => {
+              try {
+                await sbtContract.methods.revokeCertificate(addr).send({ from: currentAccount })
+                alert('Certificate revoked successfully!')
+                await loadBlockchainData()
+              } catch (err: any) {
+                console.error('Revoke failed:', err)
+                alert(err?.message || 'Failed to revoke certificate')
+              }
+            }}
+          />
         </div>
       </div>
     </div>

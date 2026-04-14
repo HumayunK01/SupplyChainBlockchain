@@ -11,9 +11,11 @@ interface RoleGroupCardProps {
     roleList: Role[]
     index: number
     sbtContract: any
+    isOwner: boolean
+    onRevoke: (addr: string) => Promise<void>
 }
 
-export const RoleGroupCard = ({ roleType, roleList, index, sbtContract }: RoleGroupCardProps) => {
+export const RoleGroupCard = ({ roleType, roleList, index, sbtContract, isOwner, onRevoke }: RoleGroupCardProps) => {
     const config = ROLE_CONFIG[roleType]
     const Icon = config.icon
     const [certStatus, setCertStatus] = useState<Record<string, boolean>>({})
@@ -108,14 +110,28 @@ export const RoleGroupCard = ({ roleType, roleList, index, sbtContract }: RoleGr
                                                     Checking...
                                                 </div>
                                             ) : hasCert ? (
-                                                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-100">
-                                                    <ShieldCheck size={16} className="text-emerald-600" />
-                                                    <span className="text-xs font-bold text-emerald-700">Soulbound Token Held</span>
+                                                <div className="flex items-center gap-2">
+                                                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-100">
+                                                        <ShieldCheck size={16} className="text-emerald-600" />
+                                                        <span className="text-xs font-bold text-emerald-700">SBT Held</span>
+                                                    </div>
+                                                    {isOwner && (
+                                                        <button
+                                                            onClick={() => {
+                                                                if (confirm(`Revoke certificate for ${role.name}?`)) {
+                                                                    onRevoke(role.addr)
+                                                                }
+                                                            }}
+                                                            className="px-2.5 py-1.5 rounded-lg text-[10px] font-bold text-red-500 bg-red-50 border border-red-100 hover:bg-red-100 transition-colors uppercase tracking-wider"
+                                                        >
+                                                            Revoke
+                                                        </button>
+                                                    )}
                                                 </div>
                                             ) : (
                                                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-red-50 border border-red-100">
                                                     <ShieldX size={16} className="text-red-500" />
-                                                    <span className="text-xs font-bold text-red-600">No Certificate</span>
+                                                    <span className="text-xs font-bold text-red-600">Revoked</span>
                                                 </div>
                                             )}
                                         </td>
@@ -143,9 +159,12 @@ interface RoleGroupListProps {
         ret: Role[]
     }
     sbtContract: any
+    isOwner: boolean
+    currentAccount: string
+    onRevoke: (addr: string) => Promise<void>
 }
 
-export const RoleGroupList = ({ roles, sbtContract }: RoleGroupListProps) => {
+export const RoleGroupList = ({ roles, sbtContract, isOwner, onRevoke }: RoleGroupListProps) => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {(['rms', 'man', 'dis', 'ret'] as const).map((roleType, index) => (
@@ -155,6 +174,8 @@ export const RoleGroupList = ({ roles, sbtContract }: RoleGroupListProps) => {
                     roleList={roles[roleType]}
                     index={index}
                     sbtContract={sbtContract}
+                    isOwner={isOwner}
+                    onRevoke={onRevoke}
                 />
             ))}
         </div>

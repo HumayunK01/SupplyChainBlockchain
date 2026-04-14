@@ -21,6 +21,12 @@ contract SupplyChain {
     // Distributor; //This guy distributes the medicines to retailers
     // Retailer; //Normal customer buys from the retailer
 
+    // Events
+    event RoleRegistered(string roleType, uint256 indexed id, address indexed addr, string name, string place, uint256 timestamp);
+    event MedicineAdded(uint256 indexed id, string name, string description, uint256 timestamp);
+    event StageUpdated(uint256 indexed medicineId, STAGE stage, address indexed updatedBy, uint256 timestamp);
+    event BatchRegistered(uint256 indexed batchId, bytes32 merkleRoot, uint256 manufacturerId, uint256 timestamp);
+
     //modifier to make sure only the owner is using the function
     modifier onlyByOwner() {
         require(msg.sender == Owner);
@@ -139,6 +145,7 @@ contract SupplyChain {
         );
         rmsCtr++;
         RMS[rmsCtr] = rawMaterialSupplier(_address, rmsCtr, _name, _place);
+        emit RoleRegistered("RMS", rmsCtr, _address, _name, _place, block.timestamp);
     }
 
     //To add manufacturer. Only contract owner can add a new manufacturer
@@ -153,6 +160,7 @@ contract SupplyChain {
         );
         manCtr++;
         MAN[manCtr] = manufacturer(_address, manCtr, _name, _place);
+        emit RoleRegistered("MAN", manCtr, _address, _name, _place, block.timestamp);
     }
 
     //To add distributor. Only contract owner can add a new distributor
@@ -167,6 +175,7 @@ contract SupplyChain {
         );
         disCtr++;
         DIS[disCtr] = distributor(_address, disCtr, _name, _place);
+        emit RoleRegistered("DIS", disCtr, _address, _name, _place, block.timestamp);
     }
 
     //To add retailer. Only contract owner can add a new retailer
@@ -181,6 +190,7 @@ contract SupplyChain {
         );
         retCtr++;
         RET[retCtr] = retailer(_address, retCtr, _name, _place);
+        emit RoleRegistered("RET", retCtr, _address, _name, _place, block.timestamp);
     }
 
     //To supply raw materials from RMS supplier to the manufacturer
@@ -191,6 +201,7 @@ contract SupplyChain {
         require(MedicineStock[_medicineID].stage == STAGE.Init);
         MedicineStock[_medicineID].RMSid = _id;
         MedicineStock[_medicineID].stage = STAGE.RawMaterialSupply;
+        emit StageUpdated(_medicineID, STAGE.RawMaterialSupply, msg.sender, block.timestamp);
     }
 
     //To check if RMS is available in the blockchain
@@ -210,6 +221,7 @@ contract SupplyChain {
         require(MedicineStock[_medicineID].stage == STAGE.RawMaterialSupply);
         MedicineStock[_medicineID].MANid = _id;
         MedicineStock[_medicineID].stage = STAGE.Manufacture;
+        emit StageUpdated(_medicineID, STAGE.Manufacture, msg.sender, block.timestamp);
     }
 
     //To check if Manufacturer is available in the blockchain
@@ -229,6 +241,7 @@ contract SupplyChain {
         require(MedicineStock[_medicineID].stage == STAGE.Manufacture);
         MedicineStock[_medicineID].DISid = _id;
         MedicineStock[_medicineID].stage = STAGE.Distribution;
+        emit StageUpdated(_medicineID, STAGE.Distribution, msg.sender, block.timestamp);
     }
 
     //To check if distributor is available in the blockchain
@@ -248,6 +261,7 @@ contract SupplyChain {
         require(MedicineStock[_medicineID].stage == STAGE.Distribution);
         MedicineStock[_medicineID].RETid = _id;
         MedicineStock[_medicineID].stage = STAGE.Retail;
+        emit StageUpdated(_medicineID, STAGE.Retail, msg.sender, block.timestamp);
     }
 
     //To check if retailer is available in the blockchain
@@ -267,6 +281,7 @@ contract SupplyChain {
         require(_id == MedicineStock[_medicineID].RETid); //Only correct retailer can mark medicine as sold
         require(MedicineStock[_medicineID].stage == STAGE.Retail);
         MedicineStock[_medicineID].stage = STAGE.sold;
+        emit StageUpdated(_medicineID, STAGE.sold, msg.sender, block.timestamp);
     }
 
     // To add new medicines to the stock
@@ -286,6 +301,7 @@ contract SupplyChain {
             0,
             STAGE.Init
         );
+        emit MedicineAdded(medicineCtr, _name, _description, block.timestamp);
     }
 
     // --- Merkle Tree Batch Issuance (V2 Scalability Update) ---
@@ -314,6 +330,7 @@ contract SupplyChain {
             _manId,
             block.timestamp
         );
+        emit BatchRegistered(batchCtr, _merkleRoot, _manId, block.timestamp);
     }
 
     // Zero-Knowledge Verification: Anyone can instantly verify a single medicine is valid within a batch

@@ -8,6 +8,7 @@ import GlobalBackground from '@/components/GlobalBackground'
 import SmoothScroll from '@/components/SmoothScroll'
 import Preloader from '@/components/Preloader'
 import BackToTop from '@/components/BackToTop'
+import { Toaster } from 'react-hot-toast'
 
 const manrope = Manrope({ subsets: ['latin'], variable: '--font-manrope' })
 
@@ -76,6 +77,28 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${manrope.variable}`}>
       <body className="font-manrope antialiased text-slate-900 bg-slate-50 relative">
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: '#0f172a',
+              color: '#f1f5f9',
+              borderRadius: '16px',
+              fontSize: '14px',
+              fontWeight: 600,
+              padding: '14px 20px',
+              boxShadow: '0 20px 40px -12px rgba(0, 0, 0, 0.25)',
+            },
+            success: {
+              iconTheme: { primary: '#10b981', secondary: '#f1f5f9' },
+            },
+            error: {
+              iconTheme: { primary: '#ef4444', secondary: '#f1f5f9' },
+              duration: 5000,
+            },
+          }}
+        />
         <Preloader />
         <SmoothScroll>
           <GlobalBackground />

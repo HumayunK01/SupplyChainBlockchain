@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { loadWeb3, getContract } from '@/lib/web3'
 import { motion } from 'framer-motion'
 import { getUserIdentity, UserRole } from '@/lib/contractUtils'
+import toast from 'react-hot-toast'
 
 // Components
 import { SupplyHeader } from '@/components/supply/SupplyHeader'
@@ -98,11 +99,11 @@ export default function Supply() {
       }
 
       await method.send({ from: currentAccount })
-      alert(successMsg)
+      toast.success(successMsg)
       setInput('')
       loadBlockchainData()
     } catch (err: any) {
-      alert(err.message || 'Transaction failed')
+      toast.error(err.message || 'Transaction failed')
     }
   }
 

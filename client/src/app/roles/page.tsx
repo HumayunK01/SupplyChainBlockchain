@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { loadWeb3, getContract } from '@/lib/web3'
 import { checkIsOwner, getContractOwner, getUserIdentity } from '@/lib/contractUtils'
+import toast from 'react-hot-toast'
 
 // Components
 import { RoleHeader } from '@/components/roles/RoleHeader'
@@ -120,10 +121,10 @@ export default function AssignRoles() {
       await method.send({ from: currentAccount })
       await loadBlockchainData()
       setNewRole({ address: '', name: '', place: '', type: 'rms' })
-      alert('Certificate issued and participant registered successfully!')
+      toast.success('Certificate issued and participant registered successfully!')
     } catch (err: any) {
       console.error('Transaction error:', err)
-      alert(err?.message || 'Transaction failed')
+      toast.error(err?.message || 'Transaction failed')
     }
   }
 
@@ -163,11 +164,11 @@ export default function AssignRoles() {
             onRevoke={async (addr: string) => {
               try {
                 await sbtContract.methods.revokeCertificate(addr).send({ from: currentAccount })
-                alert('Certificate revoked successfully!')
+                toast.success('Certificate revoked successfully!')
                 await loadBlockchainData()
               } catch (err: any) {
                 console.error('Revoke failed:', err)
-                alert(err?.message || 'Failed to revoke certificate')
+                toast.error(err?.message || 'Failed to revoke certificate')
               }
             }}
           />

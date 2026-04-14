@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { MapPin, AlertCircle, ShieldCheck, ShieldX } from 'lucide-react'
+import toast from 'react-hot-toast'
 import { Role, RoleType } from './types'
 import { ROLE_CONFIG } from './constants'
 
@@ -118,9 +119,25 @@ export const RoleGroupCard = ({ roleType, roleList, index, sbtContract, isOwner,
                                                     {isOwner && (
                                                         <button
                                                             onClick={() => {
-                                                                if (confirm(`Revoke certificate for ${role.name}?`)) {
-                                                                    onRevoke(role.addr)
-                                                                }
+                                                                toast((t) => (
+                                                                    <div className="flex flex-col gap-3">
+                                                                        <p className="text-sm font-semibold">Revoke certificate for <span className="text-white">{role.name}</span>?</p>
+                                                                        <div className="flex gap-2">
+                                                                            <button
+                                                                                onClick={() => { toast.dismiss(t.id); onRevoke(role.addr); }}
+                                                                                className="px-4 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg hover:bg-red-600 transition-colors"
+                                                                            >
+                                                                                Revoke
+                                                                            </button>
+                                                                            <button
+                                                                                onClick={() => toast.dismiss(t.id)}
+                                                                                className="px-4 py-1.5 bg-slate-700 text-slate-300 text-xs font-bold rounded-lg hover:bg-slate-600 transition-colors"
+                                                                            >
+                                                                                Cancel
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                ), { duration: 10000 })
                                                             }}
                                                             className="px-2.5 py-1.5 rounded-lg text-[10px] font-bold text-red-500 bg-red-50 border border-red-100 hover:bg-red-100 transition-colors uppercase tracking-wider"
                                                         >

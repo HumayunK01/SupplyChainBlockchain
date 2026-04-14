@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { loadWeb3, getContract } from '@/lib/web3'
 import { checkIsOwner, getContractOwner, getUserIdentity } from '@/lib/contractUtils'
+import toast from 'react-hot-toast'
 
 // Components
 import { OrderHeader } from '@/components/orders/OrderHeader'
@@ -121,10 +122,10 @@ export default function AddMed() {
       setMedName('')
       setMedDes('')
       await loadBlockchainData()
-      alert('Material order created successfully!')
+      toast.success('Material order created successfully!')
     } catch (err: any) {
       console.error('Transaction error:', err)
-      alert(err?.message || 'Transaction failed')
+      toast.error(err?.message || 'Transaction failed')
     } finally {
       setIsSubmitting(false)
     }

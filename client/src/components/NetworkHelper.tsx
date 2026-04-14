@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { switchToNetwork } from '@/lib/web3'
+import toast from 'react-hot-toast'
 
 export default function NetworkHelper() {
   const [showHelper, setShowHelper] = useState(false)
@@ -57,7 +58,7 @@ export default function NetworkHelper() {
         window.location.reload()
       }
     } catch (err: any) {
-      alert(`Failed to switch network: ${err?.message || 'Unknown error'}`)
+      toast.error(`Failed to switch network: ${err?.message || 'Unknown error'}`)
     }
   }
 

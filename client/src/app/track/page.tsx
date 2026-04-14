@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { loadWeb3, getContract } from '@/lib/web3'
+import toast from 'react-hot-toast'
 
 // Components
 import { TrackHeader } from '@/components/track/TrackHeader'
@@ -10,6 +11,7 @@ import { TrackSearch } from '@/components/track/TrackSearch'
 import { TrackAssetTable } from '@/components/track/TrackAssetTable'
 import { TrackJourney } from '@/components/track/TrackJourney'
 import SkeletonLoader from '@/components/SkeletonLoader'
+import ActivityFeed from '@/components/ActivityFeed'
 
 // Types
 import { Medicine, Role } from '@/components/track/types'
@@ -110,7 +112,7 @@ export default function Track() {
     e.preventDefault()
     const targetId = parseInt(id)
     if (isNaN(targetId) || !med[targetId]) {
-      alert('Invalid Medicine ID')
+      toast.error('Invalid Medicine ID')
       return
     }
     setActiveTrackingId(targetId)
@@ -158,11 +160,14 @@ export default function Track() {
               onSubmit={handleSearch}
             />
 
-            <TrackAssetTable
-              med={med}
-              medStage={medStage}
-              onSelect={handleSelectAsset}
-            />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <TrackAssetTable
+                med={med}
+                medStage={medStage}
+                onSelect={handleSelectAsset}
+              />
+              <ActivityFeed />
+            </div>
           </div>
         )}
       </div>

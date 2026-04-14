@@ -6,6 +6,7 @@ import { loadWeb3, getContract } from '@/lib/web3'
 import { MerkleTree } from 'merkletreejs'
 import keccak256 from 'keccak256'
 import { Database, ShieldCheck, Zap, Activity } from 'lucide-react'
+import toast from 'react-hot-toast'
 
 export default function BatchMinting() {
     const [currentAccount, setCurrentAccount] = useState('')
@@ -104,9 +105,9 @@ export default function BatchMinting() {
         setIsMinting(true)
         try {
             await supplyChain.methods.registerMedicineBatch(merkleRoot).send({ from: currentAccount })
-            alert(`Success! Recorded batch of ${batchQty} '${batchName}' to the network using the secure watermark mechanism.`)
+            toast.success(`Batch of ${batchQty} '${batchName}' recorded on-chain successfully!`)
         } catch (err: any) {
-            alert(err.message || "Failed to register batch")
+            toast.error(err.message || "Failed to register batch")
         }
         setIsMinting(false)
     }

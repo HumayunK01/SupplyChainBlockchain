@@ -12,6 +12,9 @@ contract CertificateSBT is ERC721URIStorage, Ownable {
     // Maps address to their token ID for easy lookup
     mapping(address => uint256) public certificateOf;
 
+    event CertificateIssued(address indexed holder, uint256 indexed tokenId, string uri, uint256 timestamp);
+    event CertificateRevoked(address indexed holder, uint256 indexed tokenId, uint256 timestamp);
+
     constructor() ERC721("Pharma Supply Chain Certificate", "PSCC") {}
 
     function issueCertificate(address to, string memory uri) public onlyOwner {
@@ -21,6 +24,7 @@ contract CertificateSBT is ERC721URIStorage, Ownable {
         _mint(to, newItemId);
         _setTokenURI(newItemId, uri);
         certificateOf[to] = newItemId;
+        emit CertificateIssued(to, newItemId, uri, block.timestamp);
     }
 
     function revokeCertificate(address holder) public onlyOwner {
@@ -28,6 +32,7 @@ contract CertificateSBT is ERC721URIStorage, Ownable {
         require(tokenId != 0, "CertificateSBT: No certificate found for this address");
         _burn(tokenId);
         delete certificateOf[holder];
+        emit CertificateRevoked(holder, tokenId, block.timestamp);
     }
 
     function _beforeTokenTransfer(

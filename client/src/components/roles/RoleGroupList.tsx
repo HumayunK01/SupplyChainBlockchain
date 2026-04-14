@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { MapPin, AlertCircle, ShieldCheck, ShieldX } from 'lucide-react'
+import { MapPin, AlertCircle, ShieldCheck, ShieldX, ExternalLink } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { Role, RoleType } from './types'
 import { ROLE_CONFIG } from './constants'
@@ -19,19 +19,29 @@ interface RoleGroupCardProps {
 export const RoleGroupCard = ({ roleType, roleList, index, sbtContract, isOwner, onRevoke }: RoleGroupCardProps) => {
     const config = ROLE_CONFIG[roleType]
     const Icon = config.icon
-    const [certStatus, setCertStatus] = useState<Record<string, boolean>>({})
+    const [certStatus, setCertStatus] = useState<Record<string, { held: boolean; uri?: string }>>({})
 
     useEffect(() => {
         const checkCerts = async () => {
             if (!sbtContract || roleList.length === 0) return
-            const statuses: Record<string, boolean> = {}
+            const statuses: Record<string, { held: boolean; uri?: string }> = {}
             await Promise.all(
                 roleList.map(async (role) => {
                     try {
                         const balance = await sbtContract.methods.balanceOf(role.addr).call()
-                        statuses[role.addr] = parseInt(balance) > 0
+                        const held = parseInt(balance) > 0
+                        let uri: string | undefined
+                        if (held) {
+                            try {
+                                const tokenId = await sbtContract.methods.certificateOf(role.addr).call()
+                                if (parseInt(tokenId) > 0) {
+                                    uri = await sbtContract.methods.tokenURI(tokenId).call()
+                                }
+                            } catch { }
+                        }
+                        statuses[role.addr] = { held, uri }
                     } catch {
-                        statuses[role.addr] = false
+                        statuses[role.addr] = { held: false }
                     }
                 })
             )
@@ -39,6 +49,14 @@ export const RoleGroupCard = ({ roleType, roleList, index, sbtContract, isOwner,
         }
         checkCerts()
     }, [sbtContract, roleList])
+
+    const getIpfsGatewayUrl = (uri: string) => {
+        if (uri.startsWith('ipfs://')) {
+            const cid = uri.replace('ipfs://', '')
+            return `https://ipfs.io/ipfs/${cid}`
+        }
+        return uri
+    }
 
     return (
         <motion.div
@@ -82,7 +100,7 @@ export const RoleGroupCard = ({ roleType, roleList, index, sbtContract, isOwner,
                         </thead>
                         <tbody className="divide-y divide-slate-50">
                             {roleList.map((role) => {
-                                const hasCert = certStatus[role.addr]
+                                const cert = certStatus[role.addr]
                                 return (
                                     <tr key={role.id} className="group hover:bg-slate-50/50 transition-colors">
                                         <td className="pl-12 pr-4 py-8 whitespace-nowrap">
@@ -105,17 +123,30 @@ export const RoleGroupCard = ({ roleType, roleList, index, sbtContract, isOwner,
                                             </div>
                                         </td>
                                         <td className="px-6 py-8 whitespace-nowrap">
-                                            {hasCert === undefined ? (
+                                            {cert === undefined ? (
                                                 <div className="flex items-center gap-2 text-slate-300 text-xs font-semibold">
                                                     <div className="w-4 h-4 rounded-full border-2 border-slate-200 border-t-slate-400 animate-spin" />
                                                     Checking...
                                                 </div>
-                                            ) : hasCert ? (
+                                            ) : cert.held ? (
                                                 <div className="flex items-center gap-2">
-                                                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-100">
-                                                        <ShieldCheck size={16} className="text-emerald-600" />
-                                                        <span className="text-xs font-bold text-emerald-700">SBT Held</span>
-                                                    </div>
+                                                    {cert.uri ? (
+                                                        <a
+                                                            href={getIpfsGatewayUrl(cert.uri)}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-100 hover:bg-emerald-100 transition-colors cursor-pointer"
+                                                        >
+                                                            <ShieldCheck size={16} className="text-emerald-600" />
+                                                            <span className="text-xs font-bold text-emerald-700">SBT Held</span>
+                                                            <ExternalLink size={12} className="text-emerald-400" />
+                                                        </a>
+                                                    ) : (
+                                                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-100">
+                                                            <ShieldCheck size={16} className="text-emerald-600" />
+                                                            <span className="text-xs font-bold text-emerald-700">SBT Held</span>
+                                                        </div>
+                                                    )}
                                                     {isOwner && (
                                                         <button
                                                             onClick={() => {

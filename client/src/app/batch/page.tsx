@@ -5,8 +5,15 @@ import { motion } from 'framer-motion'
 import { loadWeb3, getContract } from '@/lib/web3'
 import { MerkleTree } from 'merkletreejs'
 import keccak256 from 'keccak256'
-import { Database, ShieldCheck, Zap, Activity } from 'lucide-react'
+import { Database, ShieldCheck, Zap, Activity, Clock, Hash, BarChart3, TrendingDown } from 'lucide-react'
 import toast from 'react-hot-toast'
+
+interface BatchRecord {
+    batchId: string
+    merkleRoot: string
+    manufacturerId: string
+    timestamp: string
+}
 
 export default function BatchMinting() {
     const [currentAccount, setCurrentAccount] = useState('')
@@ -22,6 +29,10 @@ export default function BatchMinting() {
     const [verifyName, setVerifyName] = useState('')
     const [verifyId, setVerifyId] = useState<string>('')
     const [verificationResult, setVerificationResult] = useState<string>('')
+
+    // Batch history & gas
+    const [batches, setBatches] = useState<BatchRecord[]>([])
+    const [lastGasUsed, setLastGasUsed] = useState<number | null>(null)
 
     useEffect(() => {
         const init = async () => {
@@ -63,6 +74,23 @@ export default function BatchMinting() {
             const { contract, account } = await getContract()
             setSupplyChain(contract)
             setCurrentAccount(account)
+
+            // Fetch all batch history
+            const batchCount = await contract.methods.batchCtr().call()
+            const count = parseInt(batchCount)
+            if (count > 0) {
+                const batchPromises = Array.from({ length: count }, (_, i) =>
+                    contract.methods.MedicineBatches(i + 1).call()
+                )
+                const batchData = await Promise.all(batchPromises)
+                setBatches(batchData.map((b: any) => ({
+                    batchId: String(b.batchId),
+                    merkleRoot: b.merkleRoot,
+                    manufacturerId: String(b.manufacturerId),
+                    timestamp: String(b.timestamp),
+                })))
+            }
+
             setLoading(false)
         } catch (err) {
             console.error(err)
@@ -104,8 +132,10 @@ export default function BatchMinting() {
         if (!supplyChain || !merkleRoot) return
         setIsMinting(true)
         try {
-            await supplyChain.methods.registerMedicineBatch(merkleRoot).send({ from: currentAccount })
+            const receipt = await supplyChain.methods.registerMedicineBatch(merkleRoot).send({ from: currentAccount })
+            setLastGasUsed(Number(receipt.gasUsed))
             toast.success(`Batch of ${batchQty} '${batchName}' recorded on-chain successfully!`)
+            await loadBlockchainData()
         } catch (err: any) {
             toast.error(err.message || "Failed to register batch")
         }
@@ -270,6 +300,118 @@ export default function BatchMinting() {
                     </motion.div>
 
                 </div>
+
+                {/* Gas Comparison */}
+                {lastGasUsed && batchQty && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-8 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200"
+                    >
+                        <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                            <BarChart3 className="text-violet-500" /> Gas Efficiency Analysis
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="bg-red-50 border border-red-100 rounded-2xl p-6 text-center">
+                                <p className="text-[10px] font-black text-red-400 uppercase tracking-widest mb-2">Without Merkle Tree</p>
+                                <p className="text-3xl font-extrabold text-red-600">
+                                    {(lastGasUsed * Number(batchQty)).toLocaleString()}
+                                </p>
+                                <p className="text-xs font-semibold text-red-400 mt-1">
+                                    {Number(batchQty).toLocaleString()} individual transactions × {lastGasUsed.toLocaleString()} gas
+                                </p>
+                            </div>
+                            <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 text-center">
+                                <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2">With Merkle Tree</p>
+                                <p className="text-3xl font-extrabold text-emerald-600">
+                                    {lastGasUsed.toLocaleString()}
+                                </p>
+                                <p className="text-xs font-semibold text-emerald-400 mt-1">
+                                    1 transaction for {Number(batchQty).toLocaleString()} items
+                                </p>
+                            </div>
+                            <div className="bg-violet-50 border border-violet-100 rounded-2xl p-6 text-center">
+                                <div className="flex items-center justify-center gap-2 mb-2">
+                                    <TrendingDown className="text-violet-500" size={16} />
+                                    <p className="text-[10px] font-black text-violet-400 uppercase tracking-widest">Gas Saved</p>
+                                </div>
+                                <p className="text-3xl font-extrabold text-violet-600">
+                                    {(((Number(batchQty) - 1) / Number(batchQty)) * 100).toFixed(2)}%
+                                </p>
+                                <p className="text-xs font-semibold text-violet-400 mt-1">
+                                    {((lastGasUsed * Number(batchQty)) - lastGasUsed).toLocaleString()} gas units saved
+                                </p>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+
+                {/* Batch History */}
+                {batches.length > 0 && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="mt-8 bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden"
+                    >
+                        <div className="px-8 py-6 border-b border-slate-100 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center">
+                                    <Clock size={20} />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-900">Batch History</h3>
+                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{batches.length} Batches On-Chain</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse min-w-[700px]">
+                                <thead>
+                                    <tr className="bg-slate-50/50 border-b border-slate-100">
+                                        <th className="pl-8 pr-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Batch ID</th>
+                                        <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Merkle Root</th>
+                                        <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Manufacturer</th>
+                                        <th className="pl-4 pr-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Registered</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-50">
+                                    {batches.map((batch) => (
+                                        <tr key={batch.batchId} className="hover:bg-slate-50/50 transition-colors">
+                                            <td className="pl-8 pr-4 py-5">
+                                                <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-900 flex items-center justify-center font-bold text-sm">
+                                                    #{batch.batchId}
+                                                </div>
+                                            </td>
+                                            <td className="px-4 py-5">
+                                                <div className="flex items-center gap-2">
+                                                    <Hash size={14} className="text-slate-400 shrink-0" />
+                                                    <span className="font-mono text-xs text-slate-600 font-semibold truncate max-w-[280px]">
+                                                        {batch.merkleRoot}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="px-4 py-5">
+                                                <span className="px-3 py-1.5 bg-blue-50 border border-blue-100 rounded-lg text-xs font-bold text-blue-700">
+                                                    MAN #{batch.manufacturerId}
+                                                </span>
+                                            </td>
+                                            <td className="pl-4 pr-8 py-5">
+                                                <span className="text-sm font-semibold text-slate-600">
+                                                    {Number(batch.timestamp) > 0
+                                                        ? new Date(Number(batch.timestamp) * 1000).toLocaleString()
+                                                        : 'N/A'
+                                                    }
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </motion.div>
+                )}
+
             </div>
         </div>
     )

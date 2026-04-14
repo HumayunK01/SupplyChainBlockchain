@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { loadWeb3, getContract } from '@/lib/web3'
 import { checkIsOwner, getContractOwner, getUserIdentity } from '@/lib/contractUtils'
 import toast from 'react-hot-toast'
+import { uploadCertificateToIPFS, unpinFromIPFS } from '@/lib/pinata'
 
 // Components
 import { RoleHeader } from '@/components/roles/RoleHeader'
@@ -104,8 +105,18 @@ export default function AssignRoles() {
     const { address, name, place, type } = newRole
 
     try {
-      // 1. Issue Soulbound Certificate first
-      const uri = `ipfs://certificate-${type}-${Date.now()}`
+      // 1. Upload certificate metadata to IPFS
+      toast('Uploading certificate to IPFS...', { icon: '📤' })
+      const ROLE_LABELS: Record<string, string> = { rms: 'Raw Material Supplier', man: 'Manufacturer', dis: 'Distributor', ret: 'Retailer' }
+      const uri = await uploadCertificateToIPFS({
+        name,
+        role: ROLE_LABELS[type] || type,
+        place,
+        walletAddress: address,
+        registeredAt: new Date().toISOString(),
+      })
+
+      // 2. Issue Soulbound Certificate with real IPFS URI
       await sbtContract.methods.issueCertificate(address, uri).send({ from: currentAccount })
 
       // 2. Add Role
@@ -163,8 +174,27 @@ export default function AssignRoles() {
             currentAccount={currentAccount}
             onRevoke={async (addr: string) => {
               try {
+                // Fetch the IPFS URI before burning so we can unpin it
+                let ipfsCid: string | null = null
+                try {
+                  const tokenId = await sbtContract.methods.certificateOf(addr).call()
+                  if (parseInt(tokenId) > 0) {
+                    const uri: string = await sbtContract.methods.tokenURI(tokenId).call()
+                    if (uri.startsWith('ipfs://')) {
+                      ipfsCid = uri.replace('ipfs://', '')
+                    }
+                  }
+                } catch { }
+
+                // Burn the token on-chain
                 await sbtContract.methods.revokeCertificate(addr).send({ from: currentAccount })
-                toast.success('Certificate revoked successfully!')
+
+                // Unpin from IPFS so the metadata is no longer accessible
+                if (ipfsCid) {
+                  await unpinFromIPFS(ipfsCid)
+                }
+
+                toast.success('Certificate revoked and unpinned from IPFS!')
                 await loadBlockchainData()
               } catch (err: any) {
                 console.error('Revoke failed:', err)

@@ -118,11 +118,11 @@ export default function AddMed() {
     event.preventDefault()
     setIsSubmitting(true)
     try {
-      await supplyChain.methods.addMedicine(medName, medDes).send({ from: currentAccount })
+      const receipt = await supplyChain.methods.addMedicine(medName, medDes).send({ from: currentAccount })
       setMedName('')
       setMedDes('')
       await loadBlockchainData()
-      toast.success('Material order created successfully!')
+      toast.success(`Medicine order created!\nTx: ${receipt.transactionHash.slice(0, 18)}...`, { duration: 6000 })
     } catch (err: any) {
       console.error('Transaction error:', err)
       toast.error(err?.message || 'Transaction failed')

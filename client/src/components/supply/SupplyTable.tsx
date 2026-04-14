@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Hash, Table, Tag } from 'lucide-react'
+import { Hash, Table, Tag, PackageOpen } from 'lucide-react'
 import { Medicine } from './types'
 
 interface SupplyTableProps {
@@ -42,7 +42,11 @@ export const SupplyTable = ({ med, medStage }: SupplyTableProps) => {
 
             {itemsCount === 0 ? (
                 <div className="p-16 text-center">
-                    <p className="text-slate-400 font-medium">No medicines found in the system yet.</p>
+                    <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100">
+                        <PackageOpen size={32} className="text-slate-200" />
+                    </div>
+                    <h4 className="text-slate-900 font-bold">No Medicines Yet</h4>
+                    <p className="text-slate-400 text-sm mt-1 max-w-xs mx-auto">Medicines will appear here once they are added to the supply chain by the contract owner.</p>
                 </div>
             ) : (
                 <div className="overflow-x-auto">

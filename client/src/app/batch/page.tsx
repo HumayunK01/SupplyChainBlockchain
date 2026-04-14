@@ -150,7 +150,7 @@ export default function BatchMinting() {
 
             const receipt = await supplyChain.methods.registerMedicineBatch(merkleRoot, ipfsCid).send({ from: currentAccount })
             setLastGasUsed(Number(receipt.gasUsed))
-            toast.success(`Batch of ${batchQty} '${batchName}' recorded on-chain successfully!`)
+            toast.success(`Batch of ${batchQty} '${batchName}' recorded!\nTx: ${receipt.transactionHash.slice(0, 18)}...`, { duration: 6000 })
             await loadBlockchainData()
         } catch (err: any) {
             toast.error(err.message || "Failed to register batch")
@@ -363,24 +363,32 @@ export default function BatchMinting() {
                 )}
 
                 {/* Batch History */}
-                {batches.length > 0 && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="mt-8 bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden"
-                    >
-                        <div className="px-8 py-6 border-b border-slate-100 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center">
-                                    <Clock size={20} />
-                                </div>
-                                <div>
-                                    <h3 className="text-lg font-bold text-slate-900">Batch History</h3>
-                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{batches.length} Batches On-Chain</p>
-                                </div>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="mt-8 bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden"
+                >
+                    <div className="px-8 py-6 border-b border-slate-100 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center">
+                                <Clock size={20} />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-900">Batch History</h3>
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{batches.length} Batches On-Chain</p>
                             </div>
                         </div>
+                    </div>
+                    {batches.length === 0 ? (
+                        <div className="p-16 text-center">
+                            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100">
+                                <Clock size={32} className="text-slate-200" />
+                            </div>
+                            <h4 className="text-slate-900 font-bold">No Batches Registered</h4>
+                            <p className="text-slate-400 text-sm mt-1 max-w-xs mx-auto">Batch registrations using Merkle Trees will appear here. Use the form above to register your first batch.</p>
+                        </div>
+                    ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse min-w-[700px]">
                                 <thead>
@@ -441,8 +449,8 @@ export default function BatchMinting() {
                                 </tbody>
                             </table>
                         </div>
-                    </motion.div>
-                )}
+                    )}
+                </motion.div>
 
             </div>
         </div>

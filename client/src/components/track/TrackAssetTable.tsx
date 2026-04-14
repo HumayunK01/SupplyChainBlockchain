@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Package, ArrowRight, Table } from 'lucide-react'
+import { Package, ArrowRight, Table, Search } from 'lucide-react'
 import { Medicine } from './types'
 
 interface TrackAssetTableProps {
@@ -43,7 +43,11 @@ export const TrackAssetTable = ({ med, medStage, onSelect }: TrackAssetTableProp
 
             {itemsCount === 0 ? (
                 <div className="p-16 text-center">
-                    <p className="text-slate-400 font-medium">No medicines tracking on the network yet.</p>
+                    <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100">
+                        <Search size={32} className="text-slate-200" />
+                    </div>
+                    <h4 className="text-slate-900 font-bold">No Medicines to Track</h4>
+                    <p className="text-slate-400 text-sm mt-1 max-w-xs mx-auto">Once medicines are registered on-chain, you can select any item here to view its full supply chain journey.</p>
                 </div>
             ) : (
                 <div className="overflow-x-auto">

@@ -176,6 +176,21 @@ const Navbar = () => {
                                     <span className="text-xs font-mono font-medium text-slate-600">
                                         {formatAddress(account)}
                                     </span>
+                                    {role !== 'PUBLIC' && (
+                                        <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-lg ${
+                                            role === 'OWNER' ? 'bg-slate-900 text-white' :
+                                            role === 'MAN'   ? 'bg-blue-100 text-blue-700' :
+                                            role === 'RMS'   ? 'bg-emerald-100 text-emerald-700' :
+                                            role === 'DIS'   ? 'bg-amber-100 text-amber-700' :
+                                            'bg-violet-100 text-violet-700'
+                                        }`}>
+                                            {role === 'OWNER' ? 'Owner' :
+                                             role === 'RMS'   ? 'Supplier' :
+                                             role === 'MAN'   ? 'Manufacturer' :
+                                             role === 'DIS'   ? 'Distributor' :
+                                             'Retailer'}
+                                        </span>
+                                    )}
                                 </div>
                                 <motion.button
                                     whileHover={{ scale: 1.02 }}
@@ -265,7 +280,15 @@ const Navbar = () => {
                                                     <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                                                 </div>
                                                 <div>
-                                                    <div className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Connected</div>
+                                                    <div className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">
+                                                        {role !== 'PUBLIC' ? (
+                                                            role === 'OWNER' ? 'Owner' :
+                                                            role === 'RMS'   ? 'Supplier' :
+                                                            role === 'MAN'   ? 'Manufacturer' :
+                                                            role === 'DIS'   ? 'Distributor' :
+                                                            'Retailer'
+                                                        ) : 'Connected'}
+                                                    </div>
                                                     <div className="text-sm font-mono font-semibold text-slate-900">{formatAddress(account)}</div>
                                                 </div>
                                             </div>

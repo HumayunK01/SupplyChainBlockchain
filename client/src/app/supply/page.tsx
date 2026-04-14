@@ -98,8 +98,8 @@ export default function Supply() {
         default: return
       }
 
-      await method.send({ from: currentAccount })
-      toast.success(successMsg)
+      const receipt = await method.send({ from: currentAccount })
+      toast.success(`${successMsg}\nTx: ${receipt.transactionHash.slice(0, 18)}...`, { duration: 6000 })
       setInput('')
       loadBlockchainData()
     } catch (err: any) {

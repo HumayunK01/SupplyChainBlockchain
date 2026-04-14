@@ -129,10 +129,10 @@ export default function AssignRoles() {
         default: throw new Error('Invalid role type')
       }
 
-      await method.send({ from: currentAccount })
+      const receipt = await method.send({ from: currentAccount })
       await loadBlockchainData()
       setNewRole({ address: '', name: '', place: '', type: 'rms' })
-      toast.success('Certificate issued and participant registered successfully!')
+      toast.success(`Participant registered!\nTx: ${receipt.transactionHash.slice(0, 18)}...`, { duration: 6000 })
     } catch (err: any) {
       console.error('Transaction error:', err)
       toast.error(err?.message || 'Transaction failed')
@@ -187,14 +187,14 @@ export default function AssignRoles() {
                 } catch { }
 
                 // Burn the token on-chain
-                await sbtContract.methods.revokeCertificate(addr).send({ from: currentAccount })
+                const revokeReceipt = await sbtContract.methods.revokeCertificate(addr).send({ from: currentAccount })
 
                 // Unpin from IPFS so the metadata is no longer accessible
                 if (ipfsCid) {
                   await unpinFromIPFS(ipfsCid)
                 }
 
-                toast.success('Certificate revoked and unpinned from IPFS!')
+                toast.success(`Certificate revoked!\nTx: ${revokeReceipt.transactionHash.slice(0, 18)}...`, { duration: 6000 })
                 await loadBlockchainData()
               } catch (err: any) {
                 console.error('Revoke failed:', err)

@@ -1,361 +1,279 @@
-# 🔗 Supply Chain Blockchain DApp
+<p align="center">
+  <img src="client/public/logo.svg" alt="SecureChain" width="60" />
+</p>
 
-**A decentralized supply chain management system built on Ethereum using Solidity smart contracts, Next.js 14, and Web3.js.**
+<h1 align="center">SecureChain</h1>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
-[![Solidity](https://img.shields.io/badge/Solidity-363636?logo=solidity&logoColor=white)](https://soliditylang.org/)
-[![Hardhat](https://img.shields.io/badge/Hardhat-FFF1E2?logo=hardhat&logoColor=black)](https://hardhat.org/)
+<p align="center">
+  <strong>Blockchain-based pharmaceutical supply chain with Soulbound Token identity and Merkle tree batch verification</strong>
+</p>
 
----
-
-## 📋 Table of Contents
-
-- [Overview](#-overview)
-- [Features](#-features)
-- [Technology Stack](#-technology-stack)
-- [Architecture](#-architecture)
-- [Prerequisites](#-prerequisites)
-- [Quick Start Guide](#-quick-start-guide)
-- [Usage Guide](#-usage-guide)
-- [Smart Contract Details](#-smart-contract-details)
-- [Contributing](#-contributing)
-- [License](#-license)
+<p align="center">
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License" /></a>
+  <img src="https://img.shields.io/badge/Solidity-^0.8.19-363636?logo=solidity&logoColor=white" alt="Solidity" />
+  <img src="https://img.shields.io/badge/Next.js_14-000000?logo=next.js&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Hardhat-FFF1E2?logo=hardhat&logoColor=black" alt="Hardhat" />
+  <img src="https://img.shields.io/badge/IPFS-65C2CB?logo=ipfs&logoColor=white" alt="IPFS" />
+</p>
 
 ---
 
-## 🎯 Overview
+## What is SecureChain?
 
-**Supply Chain Blockchain DApp** leverages blockchain to create a transparent, secure, and efficient supply chain management system. Smart contracts handle all business logic on-chain — eliminating paperwork, preventing fraud, and giving every participant a verifiable product history.
+SecureChain tracks pharmaceutical products from raw material to consumer on an Ethereum blockchain. Every medicine has an immutable, verifiable history — eliminating counterfeiting and ensuring full traceability.
 
-### Key Benefits
+**Two key innovations set it apart:**
 
-- ✅ **Transparency** — All transactions recorded immutably on the blockchain
-- ✅ **Security** — Tamper-proof records prevent fraud
-- ✅ **Traceability** — Full product journey from raw material to consumer
-- ✅ **Efficiency** — Automated stage transitions reduce overhead
-- ✅ **Decentralization** — No single point of failure
+### 1. Soulbound Tokens (SBTs) for Identity
+
+Every supply chain participant must hold a **non-transferable ERC-721 certificate** before they can operate. These certificates:
+
+- Are minted on-chain with real metadata stored on **IPFS** (via Pinata)
+- Cannot be transferred — permanently bound to the holder's wallet
+- Can be **revoked** by the admin, which burns the token and unpins the IPFS data
+- Are verified by the SupplyChain contract before any role registration
+
+This prevents identity spoofing at the protocol level.
+
+### 2. Merkle Tree Batch Registration
+
+Instead of storing each medicine individually (expensive), manufacturers register an entire batch with a single **Merkle root hash**:
+
+- **1,000 medicines = 1 transaction** (99.9% gas savings)
+- Individual items are verified on-chain using cryptographic **Merkle proofs**
+- The full batch manifest is stored on **IPFS** with the CID recorded on-chain
+- Tamper detection is instant — changing a single character breaks the proof
 
 ---
 
-## ✨ Features
+## Supply Chain Flow
 
-- 🔐 **Role-Based Access Control** — Owner, Raw Material Supplier, Manufacturer, Distributor, Retailer
-- 📦 **Product Management** — Create and manage product orders on-chain
-- 🔄 **Supply Chain Flow** — Stage-by-stage progression enforced by smart contract
-- 📊 **Real-Time Tracking** — View detailed stage info and generate QR codes
-- 🔗 **MetaMask Integration** — Seamless Web3 wallet connection
+```
+Raw Material Supplier  -->  Manufacturer  -->  Distributor  -->  Retailer  -->  Consumer
+       (Stage 1)            (Stage 2)          (Stage 3)        (Stage 4)      (Sold)
+```
+
+Each stage is enforced by the smart contract. Only the correct role can advance a medicine to the next stage.
 
 ---
 
-## 🛠 Technology Stack
+## Tech Stack
 
-| Layer | Tech |
+| Layer | Technology |
 |---|---|
-| **Smart Contracts** | Solidity ^0.8.19, Hardhat |
-| **Local Blockchain** | Ganache |
-| **Frontend** | Next.js 14, TypeScript, Tailwind CSS |
-| **Web3** | Web3.js, MetaMask |
-| **QR Codes** | qrcode.react |
+| Smart Contracts | Solidity ^0.8.19, OpenZeppelin (ERC-721, MerkleProof) |
+| Blockchain | Hardhat / Ganache (local EVM) |
+| Frontend | Next.js 14, React 18, TypeScript, Tailwind CSS |
+| Web3 | Web3.js, MetaMask |
+| Decentralized Storage | IPFS via Pinata |
+| Cryptography | Merkle trees (merkletreejs), keccak256 |
+| Animations | Framer Motion, GSAP |
 
 ---
 
-## 🏗 Architecture
+## Architecture
 
 ```
-User Browser
-    │
-    ▼
-Next.js 14 Frontend  (Tailwind CSS)
-    │
-    ▼
-Web3.js  ←→  MetaMask
-    │
-    ▼
-Ganache (Local Ethereum Node)
-    │
-    ▼
-SupplyChain.sol Smart Contract
+Browser + MetaMask
+        |
+   Next.js 14 Frontend
+        |
+   Web3.js
+        |
+   Local EVM (Hardhat / Ganache)
+        |
+   +----+----+
+   |         |
+SupplyChain.sol  CertificateSBT.sol
+                      |
+                    IPFS (Pinata)
 ```
 
-### Supply Chain Flow
-
-```
-Ordered → Raw Material Supply → Manufacturing → Distribution → Retail → Sold
-```
+**Two contracts:**
+- **CertificateSBT.sol** — Issues and revokes soulbound identity tokens
+- **SupplyChain.sol** — Manages roles, medicines, supply chain stages, and Merkle batches
 
 ---
 
-## 📦 Prerequisites
+## Pages
 
-Install these before starting:
-
-| Tool | Version | Download |
+| Route | Purpose | Access |
 |---|---|---|
-| **Node.js** | v18 or higher | [nodejs.org](https://nodejs.org/) |
-| **Git** | Any | [git-scm.com](https://git-scm.com/) |
-| **Ganache** | Latest GUI | [trufflesuite.com/ganache](https://trufflesuite.com/ganache/) |
-| **MetaMask** | Latest | [metamask.io](https://metamask.io/) |
+| `/` | Landing page | Public |
+| `/roles` | Register participants + view SBT certificates | Owner |
+| `/addmed` | Create medicine orders | Owner |
+| `/batch` | Bulk register medicines via Merkle trees | Manufacturer |
+| `/supply` | Advance medicines through supply chain stages | Role-gated |
+| `/track` | Track product journey + on-chain activity feed | All users |
 
 ---
 
-## 🚀 Quick Start Guide
+## Smart Contract Events
 
-Follow these steps **in order** every time you start the project.
+Both contracts emit events for every significant action:
+
+| Event | Contract | Trigger |
+|---|---|---|
+| `CertificateIssued` | CertificateSBT | SBT minted to participant |
+| `CertificateRevoked` | CertificateSBT | SBT burned by admin |
+| `RoleRegistered` | SupplyChain | New participant added |
+| `MedicineAdded` | SupplyChain | New medicine order created |
+| `StageUpdated` | SupplyChain | Medicine advances to next stage |
+| `BatchRegistered` | SupplyChain | Merkle batch registered on-chain |
+
+These events power the real-time **Activity Feed** on the Track page.
 
 ---
 
-### Step 1 — Clone & Install Dependencies
+## Getting Started
+
+### Prerequisites
+
+| Tool | Version |
+|---|---|
+| Node.js | v18+ |
+| MetaMask | Latest browser extension |
+| Ganache (optional) | Latest GUI or use Hardhat node |
+
+### Setup
 
 ```bash
-git clone https://github.com/faizack619/Supply-Chain-Blockchain.git
+# Clone
+git clone https://github.com/HumayunK01/Supply-Chain-Blockchain.git
 cd Supply-Chain-Blockchain
 
-# Install blockchain/Hardhat dependencies
+# Install dependencies
+cd backend && npm install
+cd ../client && npm install
+```
+
+### Environment Variables
+
+Create `client/.env.local`:
+
+```
+NEXT_PUBLIC_PINATA_JWT="your_pinata_jwt_here"
+```
+
+Get a free JWT from [pinata.cloud](https://pinata.cloud) (API Keys > New Key > enable pinJSONToIPFS).
+
+### Deploy & Run
+
+```bash
+# Terminal 1 — Start local blockchain
 cd backend
-npm install
+npm run node
 
-# Install frontend dependencies
-cd ../client
-npm install
-```
-
----
-
-### Step 2 — Configure & Start Ganache
-
-1. Open the **Ganache** desktop application
-2. Click **New Workspace** → select **Ethereum**
-3. Go to **Settings (⚙️) → Server** and set:
-   - **Port Number**: `7545`
-   - **Chain ID**: `1337`
-4. Click **Save and Restart**
-5. Ganache is now running with 10 pre-funded test accounts
-
-> ⚠️ **Important:** Chain ID must be `1337`. If it shows `5777`, change it in settings.
-
----
-
-### Step 3 — Compile the Smart Contract
-
-```bash
+# Terminal 2 — Deploy contracts
 cd backend
-npm run compile
-```
+npm run deploy:local
 
-This compiles `contracts/SupplyChain.sol` and outputs the ABI to `client/src/artifacts/`.
-
----
-
-### Step 4 — Deploy the Smart Contract
-
-With Ganache running, deploy the contract:
-
-```bash
-npm run deploy:ganache
-```
-
-Expected output:
-```
-Deploying SupplyChain contract...
-Deploying with account: 0xYourAddress...
-Account balance: 100.0 ETH
-SupplyChain deployed to: 0xContractAddress...
-Network chain ID: 1337
-Deployment info saved to client/src/deployments.json
-```
-
-> The contract address is automatically saved to `client/src/deployments.json`. **Do not delete this file.**
-
----
-
-### Step 5 — Configure MetaMask
-
-#### Add the Ganache Network
-
-1. Open MetaMask → click the **network dropdown** (top center)
-2. Click **Add Network** → **Add a network manually**
-3. Fill in:
-
-   | Field | Value |
-   |---|---|
-   | Network Name | `Ganache Local` |
-   | RPC URL | `http://127.0.0.1:7545` |
-   | Chain ID | `1337` |
-   | Currency Symbol | `ETH` |
-
-4. Click **Save**, then **Switch to Ganache Local**
-
-#### Import a Ganache Account
-
-1. In Ganache, click the **🔑 key icon** next to any account → copy the **Private Key**
-2. In MetaMask → click your **account icon** → **Import Account**
-3. Paste the private key → click **Import**
-
-> The imported account will have 100 ETH for testing. The **first account** in Ganache is the contract **Owner**.
-
----
-
-### Step 6 — Start the Frontend
-
-```bash
+# Terminal 3 — Start frontend
 cd client
 npm run dev
 ```
 
-Open **[http://localhost:3000](http://localhost:3000)** in your browser.
+Open [http://localhost:3000](http://localhost:3000) and connect MetaMask to `localhost:8545` (Chain ID: 1337).
 
-MetaMask will prompt you to connect — **approve it**.
+> The first Hardhat account is the **Owner**. Import its private key into MetaMask.
 
----
-
-### ✅ You're Ready!
-
-| Service | URL / Location |
-|---|---|
-| **Frontend** | http://localhost:3000 |
-| **Ganache RPC** | http://127.0.0.1:7545 |
-| **MetaMask Network** | Ganache Local (Chain ID: 1337) |
-
----
-
-## 🔁 Restarting After a Break
-
-If you restart Ganache (which resets the blockchain), you must **redeploy** the contract:
+### Using Ganache Instead
 
 ```bash
+# Start Ganache GUI (port 7545, chain ID 1337)
 cd backend
 npm run deploy:ganache
 ```
 
-Then refresh the frontend — MetaMask will still be connected correctly.
+Configure MetaMask with RPC URL `http://127.0.0.1:7545`.
 
 ---
 
-## 📖 Usage Guide
+## Demo Walkthrough
 
-### 1. Register Roles (`/roles`)
-- Only the **contract owner** (first Ganache account) can register participants
-- Add a **Raw Material Supplier**, **Manufacturer**, **Distributor**, and **Retailer**
-- Each requires: Ethereum address, name, and location
+### Proving SBTs
 
-> ⚠️ You must register **at least one** of each role before creating any orders.
+1. Go to `/roles` as Owner
+2. Register a participant — two MetaMask transactions fire (mint SBT + register role)
+3. Click the green **"SBT Held"** badge — opens real certificate on IPFS
+4. Click **Revoke** — token burned, IPFS unpinned, badge turns red
 
-### 2. Order Materials (`/addmed`)
-- Only the **contract owner** can create new product orders
-- Enter product name and description
+### Proving Merkle Batches
 
-### 3. Supply Chain Flow (`/supply`)
-- Each role advances the product through its stage:
-  - **Raw Material Supplier** → supplies raw materials (Stage 1)
-  - **Manufacturer** → manufactures the product (Stage 2)
-  - **Distributor** → distributes the product (Stage 3)
-  - **Retailer** → retails and marks as sold (Stages 4 & 5)
-- Switch MetaMask to the relevant role's account to perform each action
-
-### 4. Track Products (`/track`)
-- Enter a product ID to view its complete journey
-- See stage-by-stage details with participant info
-- Generate a QR code for any product
+1. Go to `/batch` as a Manufacturer
+2. Generate 1,000 ID codes — Merkle root appears
+3. Register on-chain — gas comparison shows **99.9% savings**
+4. Verify item #42 — green (authentic)
+5. Change one character — red (counterfeit detected)
+6. Click **"View on IPFS"** in batch history — full manifest visible
 
 ---
 
-## 🔐 Smart Contract Details
+## Project Structure
 
-**`SupplyChain.sol`** — Solidity ^0.8.19
-
-### Roles
-
-| Role | Description |
-|---|---|
-| `Owner` | Deploys contract, registers roles, creates orders |
-| `RMS` | Raw Material Supplier |
-| `MAN` | Manufacturer |
-| `DIS` | Distributor |
-| `RET` | Retailer |
-
-### Product Stages
-
-| Stage | ID | Description |
-|---|---|---|
-| Init | 0 | Product ordered |
-| RawMaterialSupply | 1 | Raw materials supplied |
-| Manufacture | 2 | Product manufactured |
-| Distribution | 3 | Product distributed |
-| Retail | 4 | Product at retailer |
-| Sold | 5 | Product sold |
-
-### Key Functions
-
-```solidity
-// Register participants (owner only)
-addRMS(address, name, place)
-addManufacturer(address, name, place)
-addDistributor(address, name, place)
-addRetailer(address, name, place)
-
-// Create product order (owner only, requires all roles registered)
-addMedicine(name, description)
-
-// Progress through stages (called by respective role accounts)
-RMSsupply(medicineID)
-Manufacturing(medicineID)
-Distribute(medicineID)
-Retail(medicineID)
-sold(medicineID)
-
-// Query current stage
-showStage(medicineID) → string
+```
+Supply-Chain-Blockchain/
+|-- backend/
+|   |-- contracts/
+|   |   |-- SupplyChain.sol        # Core supply chain logic + Merkle batches
+|   |   |-- CertificateSBT.sol     # Soulbound token identity system
+|   |-- scripts/
+|   |   |-- deploy.ts              # Deploys both contracts
+|   |-- hardhat.config.ts
+|
+|-- client/
+|   |-- src/
+|   |   |-- app/                   # Next.js App Router pages
+|   |   |-- components/            # UI components by feature
+|   |   |-- lib/
+|   |   |   |-- web3.ts            # MetaMask + contract loading
+|   |   |   |-- contractUtils.ts   # Role checking utilities
+|   |   |   |-- pinata.ts          # IPFS upload/unpin via Pinata
+|   |   |-- artifacts/             # Compiled contract ABIs
+|   |   |-- deployments.json       # Contract addresses by chain ID
 ```
 
 ---
 
-## 🧰 Available Scripts
+## Available Scripts
 
-### Backend (`cd backend`)
+### Backend
 
-| Script | Command | Description |
-|---|---|---|
-| Compile | `npm run compile` | Compile Solidity contracts |
-| Deploy (Ganache) | `npm run deploy:ganache` | Deploy to Ganache (port 7545, chainId 1337) |
-| Deploy (Ganache 5777) | `npm run deploy:ganache5777` | Deploy to Ganache with chainId 5777 |
-| Deploy (Hardhat node) | `npm run deploy:local` | Deploy to local Hardhat node |
-| Local Node | `npm run node` | Start a Hardhat EVM node |
-| Test | `npm run test` | Run contract tests |
-| Clean | `npm run clean` | Remove build artifacts |
+| Command | Description |
+|---|---|
+| `npm run compile` | Compile Solidity contracts |
+| `npm run node` | Start local Hardhat node |
+| `npm run deploy:local` | Deploy to Hardhat node |
+| `npm run deploy:ganache` | Deploy to Ganache (port 7545) |
+| `npm run clean` | Remove build artifacts |
 
-### Frontend (`cd client`)
+### Client
 
-| Script | Command | Description |
-|---|---|---|
-| Dev Server | `npm run dev` | Start dev server at localhost:3000 |
-| Build | `npm run build` | Build production bundle |
-| Start | `npm start` | Serve production build |
-| Lint | `npm run lint` | Run ESLint |
+| Command | Description |
+|---|---|
+| `npm run dev` | Start dev server at localhost:3000 |
+| `npm run build` | Production build |
+| `npm run lint` | Run ESLint |
 
 ---
 
-## 🤝 Contributing
+## Research
 
-1. Fork the repository
-2. Create your branch: `git checkout -b feature/AmazingFeature`
-3. Commit changes: `git commit -m 'Add AmazingFeature'`
-4. Push: `git push origin feature/AmazingFeature`
-5. Open a Pull Request
+This project accompanies a capstone research paper demonstrating:
 
----
-
-## 📄 License
-
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+- **99.98% gas savings** via Merkle tree batch registration
+- **< 800ms** verification time per medicine
+- Soulbound Tokens as a decentralized identity layer for supply chain participants
+- IPFS integration for verifiable, decentralized certificate and batch metadata storage
 
 ---
 
-<div align="center">
+## License
 
-**Made with ❤️ using Solidity, Next.js, and Web3**
+MIT License — see [LICENSE](LICENSE) for details.
 
-[⬆ Back to Top](#-supply-chain-blockchain-dapp)
+---
 
-</div>
+<p align="center">
+  <strong>Built by <a href="https://github.com/HumayunK01">Humayun Khan</a></strong>
+</p>

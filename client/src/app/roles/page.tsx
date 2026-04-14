@@ -155,7 +155,7 @@ export default function AssignRoles() {
             onSubmit={handleRoleSubmit}
           />
 
-          <RoleGroupList roles={roles} />
+          <RoleGroupList roles={roles} sbtContract={sbtContract} />
         </div>
       </div>
     </div>

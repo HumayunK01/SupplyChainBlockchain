@@ -97,7 +97,7 @@ export const RoleRegistrationForm = ({
                         />
 
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Partner's Digital Wallet Address</label>
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Partner&apos;s Digital Wallet Address</label>
                             <div className="relative">
                                 <Wallet size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
                                 <input

@@ -29,7 +29,7 @@ const IntegrationsFlow = () => {
                         </div>
                         <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 text-slate-900">Seamless Integration</h2>
                         <p className="text-slate-500 max-w-xl mx-auto text-base md:text-lg">
-                            Visualize your product's journey from raw materials to the end consumer, all secured on the blockchain.
+                            Visualize your product&apos;s journey from raw materials to the end consumer, all secured on the blockchain.
                         </p>
                     </div>
 

@@ -141,7 +141,7 @@ const Navbar = () => {
                     </Link>
 
                     {/* Desktop Menu */}
-                    <div className="hidden md:flex items-center space-x-1">
+                    <div className="hidden lg:flex items-center space-x-1">
                         {navLinks.map((link) => {
                             const isActive = pathname === link.path
                             const Icon = link.icon
@@ -149,13 +149,13 @@ const Navbar = () => {
                                 <Link
                                     key={link.name}
                                     href={link.path}
-                                    className={`relative px-3 py-1.5 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center gap-2 group ${isActive
+                                    className={`relative px-2.5 xl:px-3 py-1.5 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center gap-1.5 xl:gap-2 group whitespace-nowrap ${isActive
                                         ? 'text-slate-900'
                                         : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100/50'
                                         }`}
                                 >
-                                    <Icon size={17} className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
-                                    {link.name}
+                                    <Icon size={17} className={`shrink-0 transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
+                                    <span>{link.name}</span>
                                     {isActive && (
                                         <motion.div
                                             layoutId="nav-active"
@@ -167,11 +167,11 @@ const Navbar = () => {
                             )
                         })}
 
-                        <div className="h-6 w-[1px] bg-slate-200 mx-4" />
+                        <div className="h-6 w-[1px] bg-slate-200 mx-2 xl:mx-4" />
 
                         {account ? (
-                            <div className="flex items-center gap-3">
-                                <div className="px-4 py-2 bg-slate-100/80 backdrop-blur-sm rounded-xl border border-slate-200 flex items-center gap-2">
+                            <div className="flex items-center gap-2">
+                                <div className="px-3 py-2 bg-slate-100/80 backdrop-blur-sm rounded-xl border border-slate-200 flex items-center gap-2">
                                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                                     <span className="text-xs font-mono font-medium text-slate-600">
                                         {formatAddress(account)}
@@ -181,10 +181,10 @@ const Navbar = () => {
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     onClick={handleDisconnect}
-                                    className="p-2.5 text-slate-500 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                                    className="p-2 text-slate-500 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                                     title="Logout"
                                 >
-                                    <LogOut size={20} />
+                                    <LogOut size={18} />
                                 </motion.button>
                             </div>
                         ) : (
@@ -192,10 +192,10 @@ const Navbar = () => {
                                 whileHover={{ scale: 1.02, translateY: -1 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={handleConnect}
-                                className="btn-primary group flex items-center gap-2.5 !py-2 !px-5"
+                                className="btn-primary group flex items-center gap-2 !py-2 !px-4"
                             >
                                 <Wallet size={18} className="group-hover:rotate-12 transition-transform" />
-                                <span className="text-sm font-bold">Connect Wallet</span>
+                                <span className="text-sm font-bold">Connect</span>
                             </motion.button>
                         )}
                     </div>
@@ -203,7 +203,7 @@ const Navbar = () => {
                     {/* Mobile Menu Button */}
                     <motion.button
                         whileTap={{ scale: 0.9 }}
-                        className="md:hidden p-2 text-slate-600 hover:text-slate-900 bg-slate-100/50 rounded-xl"
+                        className="lg:hidden p-2 text-slate-600 hover:text-slate-900 bg-slate-100/50 rounded-xl"
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                     >
                         {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -215,14 +215,14 @@ const Navbar = () => {
             <AnimatePresence>
                 {isMenuOpen && (
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="md:hidden fixed inset-0 z-40 bg-white/80 backdrop-blur-xl"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.25 }}
+                        className="lg:hidden fixed inset-0 z-40 bg-white/90 backdrop-blur-xl overflow-y-auto"
                     >
-                        <div className="flex flex-col h-full pt-28 px-6 pb-10">
-                            <div className="flex-1 space-y-2">
+                        <div className="flex flex-col min-h-full pt-24 px-5 pb-8">
+                            <div className="flex-1 space-y-1.5">
                                 {navLinks.map((link, i) => {
                                     const isActive = pathname === link.path
                                     const Icon = link.icon
@@ -231,17 +231,17 @@ const Navbar = () => {
                                             key={link.name}
                                             initial={{ opacity: 0, x: -20 }}
                                             animate={{ opacity: 1, x: 0 }}
-                                            transition={{ delay: i * 0.1 }}
+                                            transition={{ delay: i * 0.08 }}
                                         >
                                             <Link
                                                 href={link.path}
-                                                className={`flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 ${isActive
-                                                    ? 'bg-slate-900 text-white shadow-xl shadow-slate-900/10'
+                                                className={`flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 ${isActive
+                                                    ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/10'
                                                     : 'text-slate-600 hover:bg-slate-100'
                                                     }`}
                                             >
-                                                <Icon size={22} className={isActive ? 'text-white' : 'text-slate-400'} />
-                                                <span className="text-lg font-bold font-manrope">{link.name}</span>
+                                                <Icon size={20} className={isActive ? 'text-white' : 'text-slate-400'} />
+                                                <span className="text-base font-bold font-manrope">{link.name}</span>
                                                 {isActive && (
                                                     <motion.div layoutId="active-dot-mobile" className="ml-auto w-1.5 h-1.5 bg-white rounded-full" />
                                                 )}
@@ -254,42 +254,35 @@ const Navbar = () => {
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.4 }}
-                                className="mt-auto space-y-4"
+                                transition={{ delay: 0.3 }}
+                                className="mt-6 space-y-4"
                             >
                                 {account ? (
-                                    <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100">
-                                        <div className="flex items-center justify-between mb-6">
+                                    <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100">
+                                        <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                                                    <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
+                                                <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center">
+                                                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                                                 </div>
                                                 <div>
-                                                    <div className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Connected Wallet</div>
+                                                    <div className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Connected</div>
                                                     <div className="text-sm font-mono font-semibold text-slate-900">{formatAddress(account)}</div>
                                                 </div>
                                             </div>
                                             <button
                                                 onClick={handleDisconnect}
-                                                className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-red-500 hover:border-red-100 transition-colors"
+                                                className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-red-500 hover:border-red-100 transition-colors"
                                             >
-                                                <LogOut size={18} />
+                                                <LogOut size={16} />
                                             </button>
                                         </div>
-                                        <button
-                                            onClick={() => router.push('/dashboard')}
-                                            className="w-full btn-primary py-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2"
-                                        >
-                                            <User size={18} />
-                                            Go to Dashboard
-                                        </button>
                                     </div>
                                 ) : (
                                     <button
                                         onClick={handleConnect}
-                                        className="w-full btn-primary py-5 rounded-2xl text-base font-bold flex items-center justify-center gap-3 shadow-2xl shadow-slate-900/20"
+                                        className="w-full btn-primary py-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2.5 shadow-xl shadow-slate-900/20"
                                     >
-                                        <Wallet size={22} />
+                                        <Wallet size={20} />
                                         <span>Connect MetaMask</span>
                                     </button>
                                 )}

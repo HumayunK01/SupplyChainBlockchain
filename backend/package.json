@@ -10,13 +10,22 @@
     "deploy:ganache5777": "hardhat run scripts/deploy.ts --network ganache5777",
     "node": "hardhat node",
     "test": "hardhat test",
-    "clean": "hardhat clean"
+    "clean": "hardhat clean",
+    "benchmark": "hardhat run scripts/benchmark.ts --network localhost",
+    "benchmark:ganache": "hardhat run scripts/benchmark.ts --network ganache"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "@openzeppelin/contracts": "^4.9.6",
     "@types/node": "^20.19.25",
     "hardhat": "^2.27.1",
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.6.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
+  },
+  "allowScripts": {
+    "keccak@3.0.2": true,
+    "secp256k1@4.0.3": true
   }
 }

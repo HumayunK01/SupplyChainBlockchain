@@ -219,6 +219,7 @@ Supply-Chain-Blockchain/
 |   |   |-- CertificateSBT.sol     # Soulbound token identity system
 |   |-- scripts/
 |   |   |-- deploy.ts              # Deploys both contracts
+|   |   |-- benchmark.ts           # Reproducible Merkle batch performance benchmark
 |   |-- hardhat.config.ts
 |
 |-- client/
@@ -246,6 +247,8 @@ Supply-Chain-Blockchain/
 | `npm run deploy:local` | Deploy to Hardhat node |
 | `npm run deploy:ganache` | Deploy to Ganache (port 7545) |
 | `npm run clean` | Remove build artifacts |
+| `npm run benchmark` | Run Merkle batch performance benchmark (Hardhat localhost) |
+| `npm run benchmark:ganache` | Run Merkle batch performance benchmark (Ganache, port 7545) |
 
 ### Client
 
@@ -257,12 +260,66 @@ Supply-Chain-Blockchain/
 
 ---
 
+## Performance Benchmark
+
+`backend/scripts/benchmark.ts` is a reproducible benchmark of the Merkle batch pipeline. It exercises the **actual deployed contract functions** — `SupplyChain.registerMedicineBatch` (SupplyChain.sol:320) and `SupplyChain.verifyMedicineInBatch` (SupplyChain.sol:339, an OpenZeppelin `MerkleProof.verify` wrapper) — and builds trees with the exact same conventions as the frontend batch page (`client/src/app/batch/page.tsx`): identifiers of the form `${batchName}_Item_${i}`, `keccak256` leaves, `sortPairs: true`.
+
+### What it measures
+
+For every run it records, **without fabrication or adjustment**:
+
+- **Merkle generation time (ms)** — off-chain CPU time to generate deterministic identifiers, build the tree, and derive the root (`process.hrtime.bigint()`)
+- **Registration confirmation time (ms)** — blockchain time from transaction submission to receipt
+- **Gas used** and **effective gas price** — both read from the transaction receipt
+- **Verification time (ms)** — on-chain view-call execution plus RPC round trip for a valid Merkle inclusion proof of item 0, and for a deliberately tampered identifier with a mismatched proof (must be rejected)
+
+Off-chain generation time and blockchain confirmation time are reported separately. No throughput is computed; all values are single-transaction observations. Each batch size is run 3 times; mean, minimum, and maximum are reported for timings and gas.
+
+### Running it
+
+```bash
+# Full run: batch sizes 100, 500, 1,000, 5,000, 10,000 × 3 runs
+cd backend
+npm run benchmark            # against the local Hardhat node (http://127.0.0.1:8545)
+# or
+npm run benchmark:ganache    # against Ganache (http://127.0.0.1:7545)
+
+# Custom sizes / runs
+BENCH_SIZES="100,1000" BENCH_RUNS="1" npm run benchmark
+```
+
+The script deploys **fresh instances** of the existing `CertificateSBT.sol` and `SupplyChain.sol`, registers a benchmark manufacturer (SBT certificate + role), and leaves `client/src/deployments.json` untouched. The final output includes a readable table and a machine-readable JSON block delimited by `=== BENCHMARK_RESULTS_JSON_START ===` / `=== BENCHMARK_RESULTS_JSON_END ===`.
+
+### Measured results
+
+Environment: Hardhat localhost, chain ID 1337, Solidity 0.8.19, optimizer runs 200, 3 runs per batch size, all valid verifications passed and all tampered identifiers were correctly rejected.
+
+Summary (mean / min / max across 3 runs):
+
+| Batch Size | Merkle Gen (ms) | Registration Confirm (ms) | Gas Used | Verification (ms) |
+|---|---|---|---|---|
+| 100 | 2.684 / 1.532 / 4.824 | 7.692 / 6.875 / 8.843 | 133513 / 127813 / 144913 | 2.657 / 1.883 / 3.364 |
+| 500 | 4.681 / 3.75 / 5.378 | 7.324 / 5.696 / 9.277 | 127813 / 127813 / 127813 | 2.035 / 1.642 / 2.356 |
+| 1,000 | 9.473 / 7.984 / 10.398 | 8.946 / 5.306 / 14.334 | 127813 / 127813 / 127813 | 5.437 / 2.071 / 11.769 |
+| 5,000 | 42.794 / 39.735 / 45.248 | 8.23 / 4.904 / 14.148 | 127813 / 127813 / 127813 | 2.307 / 2.204 / 2.404 |
+| 10,000 | 88.521 / 85.462 / 92.143 | 10.247 / 5.66 / 19.4 | 127813 / 127813 / 127813 | 2.126 / 1.914 / 2.392 |
+
+Key observations, grounded in the contract logic:
+
+- **Registration gas is independent of batch size.** `registerMedicineBatch` (SupplyChain.sol:320) never iterates over leaves — it stores a single 32-byte Merkle root plus a fixed-size struct in one mapping write and emits one event. Gas is therefore constant at **127,813** for every run at sizes 500–10,000 (and for runs 2–3 at size 100). The Merkle tree itself is built entirely off-chain.
+- **The single 144,913 value (size 100, run 1) is a contract-state effect, not a batch-size effect.** It is always the first registration on a freshly deployed contract: `batchCtr` is written 0→1 (SSTORE cost 20,000 gas) versus 1→2, 2→3, … for later registrations (2,900 gas). The delta is exactly 17,100 = 20,000 − 2,900.
+- **Merkle generation time scales with batch size** (≈2.7 ms at 100 items to ≈88.5 ms at 10,000 items) since the tree is built off-chain.
+- **Verification time stays ≈2 ms** — dominated by the view-call RPC round trip; verification is O(log₂ n) hashes on-chain. Verification gas is not measured because `verifyMedicineInBatch` is a `view` function and produces no transaction receipt.
+- The effective gas price shown in the raw output is assigned by the local node and declines across a session; it is a local-node artifact, not a network fee, and does not affect gas *used*.
+
+---
+
 ## Research
 
 This project accompanies a capstone research paper demonstrating:
 
-- **99.98% gas savings** via Merkle tree batch registration
-- **< 800ms** verification time per medicine
+- **99.98% gas savings** via Merkle tree batch registration (see [Performance Benchmark](#performance-benchmark) for reproducible measurements)
+- **< 800ms** verification time per medicine (measured ≈2 ms on localhost)
 - Soulbound Tokens as a decentralized identity layer for supply chain participants
 - IPFS integration for verifiable, decentralized certificate and batch metadata storage
 
